@@ -1,6 +1,5 @@
 package Annotation.Sentence;
 
-import DataCollector.Sentence.Semantic.SentenceSemanticFrame;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import WordNet.WordNet;
 

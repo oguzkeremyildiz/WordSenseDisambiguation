@@ -3,7 +3,7 @@ package Annotation.Sentence;
 import AnnotatedSentence.AnnotatedCorpus;
 import AnnotatedSentence.AnnotatedSentence;
 import AnnotatedSentence.AnnotatedWord;
-import AnnotatedSentence.AutoProcessor.AutoSemantic.TurkishSentenceAutoSemantic;
+import AutoProcessor.Sentence.TurkishSentenceAutoSemantic;
 import DataCollector.ParseTree.TreeEditorPanel;
 import DataCollector.Sentence.SentenceAnnotatorFrame;
 import DataCollector.Sentence.SentenceAnnotatorPanel;
@@ -65,7 +65,7 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
                 this.wordNet = new WordNet(domainWordNetFileName, new Locale("tr"));
                 TurkishSentenceAutoSemantic turkishSentenceAutoSemantic = new TurkishSentenceAutoSemantic(this.wordNet, this.fsm);
                 for (int i = 0; i < projectPane.getTabCount(); i++){
-                    DataCollector.Sentence.Semantic.SentenceSemanticPanel current = (DataCollector.Sentence.Semantic.SentenceSemanticPanel) ((JScrollPane) projectPane.getComponentAt(i)).getViewport().getView();
+                    SentenceSemanticPanel current = (SentenceSemanticPanel) ((JScrollPane) projectPane.getComponentAt(i)).getViewport().getView();
                     current.setFsm(this.fsm);
                     current.setWordnet(this.wordNet);
                     current.setTurkishSentenceAutoSemantic(turkishSentenceAutoSemantic);
@@ -75,9 +75,9 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
         });
         JMenuItem itemAutoAnnotate = addMenuItem(projectMenu, "Annotate Every Word With Last Sense", KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
         itemAutoAnnotate.addActionListener(e -> {
-            DataCollector.Sentence.Semantic.SentenceSemanticPanel current;
+            SentenceSemanticPanel current;
             int wordCount = 0, fileCount = 0;
-            current = (DataCollector.Sentence.Semantic.SentenceSemanticPanel) ((JScrollPane) projectPane.getSelectedComponent()).getViewport().getView();
+            current = (SentenceSemanticPanel) ((JScrollPane) projectPane.getSelectedComponent()).getViewport().getView();
             AnnotatedWord clickedWord = current.getClickedWord();
             for (int i = 0; i < corpus.sentenceCount(); i++){
                 AnnotatedSentence sentence = (AnnotatedSentence) corpus.getSentence(i);
@@ -149,13 +149,13 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
     }
 
     protected SentenceAnnotatorPanel generatePanel(String currentPath, String rawFileName) {
-        return new DataCollector.Sentence.Semantic.SentenceSemanticPanel(currentPath, rawFileName, fsm, wordNet, exampleSentences);
+        return new SentenceSemanticPanel(currentPath, rawFileName, fsm, wordNet, exampleSentences);
     }
 
     public void next(int count){
         super.next(count);
-        DataCollector.Sentence.Semantic.SentenceSemanticPanel current;
-        current = (DataCollector.Sentence.Semantic.SentenceSemanticPanel) ((JScrollPane) projectPane.getSelectedComponent()).getViewport().getView();
+        SentenceSemanticPanel current;
+        current = (SentenceSemanticPanel) ((JScrollPane) projectPane.getSelectedComponent()).getViewport().getView();
         if (autoSemanticDetectionOption.isSelected()){
             current.autoDetect();
         }

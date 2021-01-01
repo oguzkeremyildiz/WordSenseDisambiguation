@@ -2,8 +2,8 @@ package Annotation.Sentence;
 
 import AnnotatedSentence.AnnotatedSentence;
 import AnnotatedSentence.AnnotatedWord;
-import AnnotatedSentence.AutoProcessor.AutoSemantic.TurkishSentenceAutoSemantic;
 import AnnotatedSentence.ViewLayerType;
+import AutoProcessor.Sentence.TurkishSentenceAutoSemantic;
 import DataCollector.Sentence.SentenceAnnotatorPanel;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import WordNet.SynSet;
