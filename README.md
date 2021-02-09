@@ -97,3 +97,27 @@ Use below line to generate jar file:
             <artifactId>WordSenseDisambiguation</artifactId>
             <version>1.0.1</version>
         </dependency>
+
+Detailed Description
+============
+
+## ParseTree
+
+In order to sense annotate a parse tree, one can use autoSemantic method of the TurkishTreeAutoSemantic class.
+
+	ParseTreeDrawable parseTree = ...
+	WordNet wordNet = new WordNet();
+	FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
+	TurkishTreeAutoSemantic turkishAutoSemantic = new TurkishTreeAutoSemantic(wordnet, fsm);
+	turkishAutoSemantic.autoSemantic();
+
+## Sentence
+
+In order to sense annotate a parse tree, one can use autoSemantic method of the TurkishSentenceAutoSemantic class.
+
+	AnnotatedSentence sentence = ...
+	WordNet wordNet = new WordNet();
+	FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
+	TurkishSentenceAutoSemantic turkishAutoSemantic = new TurkishSentenceAutoSemantic(wordnet, fsm);
+	turkishAutoSemantic.autoSemantic();
+
