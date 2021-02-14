@@ -22,7 +22,12 @@ public class Lesk extends TreeAutoSemantic {
     }
 
     private int intersection(SynSet synSet, ArrayList<ParseNodeDrawable> leafList){
-        String[] words1 = synSet.getLongDefinition().split(" ");
+        String[] words1;
+        if (synSet.getExample() != null){
+            words1 = (synSet.getLongDefinition() + " " + synSet.getExample()).split(" ");
+        } else {
+            words1 = synSet.getLongDefinition().split(" ");
+        }
         String[] words2 = new String[leafList.size()];
         for (int i = 0; i < leafList.size(); i++){
             words2[i] = leafList.get(i).getLayerData(ViewLayerType.TURKISH_WORD);

@@ -24,7 +24,12 @@ public class Lesk extends SentenceAutoSemantic{
     }
 
     private int intersection(SynSet synSet, AnnotatedSentence sentence){
-        String[] words1 = synSet.getLongDefinition().split(" ");
+        String[] words1;
+        if (synSet.getExample() != null){
+            words1 = (synSet.getLongDefinition() + " " + synSet.getExample()).split(" ");
+        } else {
+            words1 = synSet.getLongDefinition().split(" ");
+        }
         String[] words2 = sentence.toWords().split(" ");
         int count = 0;
         for (String word1 : words1){
