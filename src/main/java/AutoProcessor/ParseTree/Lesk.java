@@ -21,7 +21,7 @@ public class Lesk extends TreeAutoSemantic {
         this.fsm = fsm;
     }
 
-    public int intersection(SynSet synSet, ArrayList<ParseNodeDrawable> leafList){
+    private int intersection(SynSet synSet, ArrayList<ParseNodeDrawable> leafList){
         String[] words1 = synSet.getLongDefinition().split(" ");
         String[] words2 = new String[leafList.size()];
         for (int i = 0; i < leafList.size(); i++){
@@ -45,7 +45,7 @@ public class Lesk extends TreeAutoSemantic {
         boolean done = false;
         for (int i = 0; i < leafList.size(); i++){
             ArrayList<SynSet> synSets = getCandidateSynSets(turkishWordNet, fsm, leafList, i);
-            int maxIntersection = 0;
+            int maxIntersection = -1;
             int maxIndex = -1;
             for (int j = 0; j < synSets.size(); j++){
                 SynSet synSet = synSets.get(j);

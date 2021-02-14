@@ -1,7 +1,6 @@
 package AutoProcessor.Sentence;
 
 import AnnotatedSentence.*;
-import AnnotatedTree.ParseNodeDrawable;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import WordNet.*;
 
@@ -24,7 +23,7 @@ public class Lesk extends SentenceAutoSemantic{
         this.fsm = fsm;
     }
 
-    public int intersection(SynSet synSet, AnnotatedSentence sentence){
+    private int intersection(SynSet synSet, AnnotatedSentence sentence){
         String[] words1 = synSet.getLongDefinition().split(" ");
         String[] words2 = sentence.toWords().split(" ");
         int count = 0;
@@ -39,10 +38,11 @@ public class Lesk extends SentenceAutoSemantic{
     }
 
     @Override
-    protected void autoLabelSingleSemantics(AnnotatedSentence sentence) {
+    protected boolean autoLabelSingleSemantics(AnnotatedSentence sentence) {
+        boolean done = false;
         for (int i = 0; i < sentence.wordCount(); i++) {
             ArrayList<SynSet> synSets = getCandidateSynSets(turkishWordNet, fsm, sentence, i);
-            int maxIntersection = 0;
+            int maxIntersection = -1;
             int maxIndex = -1;
             for (int j = 0; j < synSets.size(); j++){
                 SynSet synSet = synSets.get(j);
@@ -53,8 +53,10 @@ public class Lesk extends SentenceAutoSemantic{
                 }
             }
             if (maxIndex != -1){
+                done = true;
                 ((AnnotatedWord) sentence.getWord(i)).setSemantic(synSets.get(maxIndex).getId());
             }
         }
+        return done;
     }
 }

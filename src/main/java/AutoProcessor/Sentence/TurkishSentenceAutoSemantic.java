@@ -34,7 +34,8 @@ public class TurkishSentenceAutoSemantic extends SentenceAutoSemantic {
      * if it has only one sense. If there is only one sense for that multiword expression or word; it sets that sense.
      * @param sentence The sentence for which word sense disambiguation will be determined automatically.
      */
-    protected void autoLabelSingleSemantics(AnnotatedSentence sentence) {
+    protected boolean autoLabelSingleSemantics(AnnotatedSentence sentence) {
+        boolean done = false;
         AnnotatedWord twoPrevious = null, previous = null, current, twoNext = null, next = null;
         for (int i = 0; i < sentence.wordCount(); i++){
             current = (AnnotatedWord) sentence.getWord(i);
@@ -55,6 +56,7 @@ public class TurkishSentenceAutoSemantic extends SentenceAutoSemantic {
                     ArrayList<SynSet> idioms = turkishWordNet.constructIdiomSynSets(twoPrevious.getParse(), previous.getParse(), current.getParse(), twoPrevious.getMetamorphicParse(), previous.getMetamorphicParse(), current.getMetamorphicParse(), fsm);
                     if (idioms.size() == 1){
                         current.setSemantic(idioms.get(0).getId());
+                        done = true;
                         continue;
                     }
                 }
@@ -62,6 +64,7 @@ public class TurkishSentenceAutoSemantic extends SentenceAutoSemantic {
                     ArrayList<SynSet> idioms = turkishWordNet.constructIdiomSynSets(previous.getParse(), current.getParse(), next.getParse(), previous.getMetamorphicParse(), current.getMetamorphicParse(), next.getMetamorphicParse(), fsm);
                     if (idioms.size() == 1){
                         current.setSemantic(idioms.get(0).getId());
+                        done = true;
                         continue;
                     }
                 }
@@ -69,6 +72,7 @@ public class TurkishSentenceAutoSemantic extends SentenceAutoSemantic {
                     ArrayList<SynSet> idioms = turkishWordNet.constructIdiomSynSets(current.getParse(), next.getParse(), twoNext.getParse(), current.getMetamorphicParse(), next.getMetamorphicParse(), twoNext.getMetamorphicParse(), fsm);
                     if (idioms.size() == 1){
                         current.setSemantic(idioms.get(0).getId());
+                        done = true;
                         continue;
                     }
                 }
@@ -76,6 +80,7 @@ public class TurkishSentenceAutoSemantic extends SentenceAutoSemantic {
                     ArrayList<SynSet> idioms = turkishWordNet.constructIdiomSynSets(previous.getParse(), current.getParse(), previous.getMetamorphicParse(), current.getMetamorphicParse(), fsm);
                     if (idioms.size() == 1){
                         current.setSemantic(idioms.get(0).getId());
+                        done = true;
                         continue;
                     }
                 }
@@ -83,14 +88,17 @@ public class TurkishSentenceAutoSemantic extends SentenceAutoSemantic {
                     ArrayList<SynSet> idioms = turkishWordNet.constructIdiomSynSets(current.getParse(), next.getParse(), current.getMetamorphicParse(), next.getMetamorphicParse(), fsm);
                     if (idioms.size() == 1){
                         current.setSemantic(idioms.get(0).getId());
+                        done = true;
                         continue;
                     }
                 }
                 ArrayList<SynSet> meanings = turkishWordNet.constructSynSets(current.getParse().getWord().getName(), current.getParse(), current.getMetamorphicParse(), fsm);
                 if (current.getSemantic() == null && meanings.size() == 1){
+                    done = true;
                     current.setSemantic(meanings.get(0).getId());
                 }
             }
         }
+        return done;
     }
 }

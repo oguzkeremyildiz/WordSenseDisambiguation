@@ -32,7 +32,7 @@ public abstract class TreeAutoSemantic {
         }
         try {
             synSets = wordNet.constructSynSets(current.getMorphologicalParseAt(0).getWord().getName(),
-                    current.getMorphologicalParseAt(0), current.getMetamorphicParseAt(index), fsm);
+                    current.getMorphologicalParseAt(0), current.getMetamorphicParseAt(0), fsm);
             if (twoPrevious != null && twoPrevious.getMorphologicalParseAt(0) != null && previous.getMorphologicalParseAt(0) != null){
                 synSets.addAll(wordNet.constructIdiomSynSets(twoPrevious.getMorphologicalParseAt(0), previous.getMorphologicalParseAt(0), current.getMorphologicalParseAt(0),
                         twoPrevious.getMetamorphicParseAt(0), previous.getMetamorphicParseAt(0), current.getMetamorphicParseAt(0), fsm));

@@ -12,7 +12,7 @@ public abstract class SentenceAutoSemantic {
      * The method should set the senses of all words, for which there is only one possible sense.
      * @param sentence The sentence for which word sense disambiguation will be determined automatically.
      */
-    protected abstract void autoLabelSingleSemantics(AnnotatedSentence sentence);
+    protected abstract boolean autoLabelSingleSemantics(AnnotatedSentence sentence);
 
     protected ArrayList<SynSet> getCandidateSynSets(WordNet wordNet, FsmMorphologicalAnalyzer fsm, AnnotatedSentence sentence, int index){
         AnnotatedWord twoPrevious = null, previous = null, current, twoNext = null, next = null;
@@ -56,7 +56,9 @@ public abstract class SentenceAutoSemantic {
     }
 
     public void autoSemantic(AnnotatedSentence sentence){
-        autoLabelSingleSemantics(sentence);
+        if (autoLabelSingleSemantics(sentence)){
+            sentence.save();
+        }
     }
 
 }
