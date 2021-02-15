@@ -6,6 +6,7 @@ import WordNet.*;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Random;
 
 public class Lesk extends SentenceAutoSemantic{
 
@@ -44,22 +45,28 @@ public class Lesk extends SentenceAutoSemantic{
 
     @Override
     protected boolean autoLabelSingleSemantics(AnnotatedSentence sentence) {
+        Random random = new Random(1);
         boolean done = false;
         for (int i = 0; i < sentence.wordCount(); i++) {
             ArrayList<SynSet> synSets = getCandidateSynSets(turkishWordNet, fsm, sentence, i);
             int maxIntersection = -1;
-            int maxIndex = -1;
             for (int j = 0; j < synSets.size(); j++){
                 SynSet synSet = synSets.get(j);
                 int intersectionCount = intersection(synSet, sentence);
                 if (intersectionCount > maxIntersection){
                     maxIntersection = intersectionCount;
-                    maxIndex = j;
                 }
             }
-            if (maxIndex != -1){
+            ArrayList<SynSet> maxSynSets = new ArrayList<SynSet>();
+            for (int j = 0; j < synSets.size(); j++){
+                SynSet synSet = synSets.get(j);
+                if (intersection(synSet, sentence) == maxIntersection){
+                    maxSynSets.add(synSet);
+                }
+            }
+            if (maxSynSets.size() > 0){
                 done = true;
-                ((AnnotatedWord) sentence.getWord(i)).setSemantic(synSets.get(maxIndex).getId());
+                ((AnnotatedWord) sentence.getWord(i)).setSemantic(maxSynSets.get(random.nextInt(maxSynSets.size())).getId());
             }
         }
         return done;

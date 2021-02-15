@@ -5,7 +5,7 @@ import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import WordNet.*;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Locale;
 
 public class MostFrequentSentenceAutoSemantic extends SentenceAutoSemantic{
 
@@ -23,13 +23,21 @@ public class MostFrequentSentenceAutoSemantic extends SentenceAutoSemantic{
         this.fsm = fsm;
     }
 
-    private SynSet mostFrequent(ArrayList<SynSet> synSets){
+    private SynSet mostFrequent(ArrayList<SynSet> synSets, String root){
+        if (synSets.size() == 1){
+            return synSets.get(0);
+        }
         int minSense = 50;
         SynSet best = null;
         for (SynSet synSet : synSets){
-            if (synSet.getSynonym().getLiteral(0).getSense() < minSense){
-                minSense = synSet.getSynonym().getLiteral(0).getSense();
-                best = synSet;
+            for (int i = 0; i < synSet.getSynonym().literalSize(); i++){
+                if (synSet.getSynonym().getLiteral(i).getName().toLowerCase(new Locale("tr")).startsWith(root)
+                        || synSet.getSynonym().getLiteral(i).getName().toLowerCase(new Locale("tr")).endsWith(" " + root)){
+                    if (synSet.getSynonym().getLiteral(i).getSense() < minSense){
+                        minSense = synSet.getSynonym().getLiteral(i).getSense();
+                        best = synSet;
+                    }
+                }
             }
         }
         return best;
@@ -37,11 +45,13 @@ public class MostFrequentSentenceAutoSemantic extends SentenceAutoSemantic{
 
     @Override
     protected boolean autoLabelSingleSemantics(AnnotatedSentence sentence) {
-        Random random = new Random(1);
         for (int i = 0; i < sentence.wordCount(); i++) {
             ArrayList<SynSet> synSets = getCandidateSynSets(turkishWordNet, fsm, sentence, i);
             if (synSets.size() > 0){
-                ((AnnotatedWord) sentence.getWord(i)).setSemantic(mostFrequent(synSets).getId());
+                SynSet best = mostFrequent(synSets, ((AnnotatedWord) sentence.getWord(i)).getParse().getWord().getName());
+                if (best != null){
+                    ((AnnotatedWord) sentence.getWord(i)).setSemantic(best.getId());
+                }
             }
         }
         return true;

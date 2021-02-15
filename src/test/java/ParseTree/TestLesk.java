@@ -1,6 +1,5 @@
 package ParseTree;
 
-import AnnotatedSentence.AnnotatedWord;
 import AnnotatedSentence.ViewLayerType;
 import AnnotatedTree.ParseNodeDrawable;
 import AnnotatedTree.ParseTreeDrawable;
@@ -52,7 +51,7 @@ public class TestLesk {
             }
         }
         assertEquals(475, total);
-        assertEquals(245, correct);
+        assertEquals(246, correct);
     }
 
 }

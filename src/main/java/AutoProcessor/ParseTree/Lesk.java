@@ -10,6 +10,7 @@ import WordNet.*;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Random;
 
 public class Lesk extends TreeAutoSemantic {
 
@@ -45,23 +46,29 @@ public class Lesk extends TreeAutoSemantic {
 
     @Override
     protected boolean autoLabelSingleSemantics(ParseTreeDrawable parseTree) {
+        Random random = new Random(1);
         NodeDrawableCollector nodeDrawableCollector = new NodeDrawableCollector((ParseNodeDrawable) parseTree.getRoot(), new IsTurkishLeafNode());
         ArrayList<ParseNodeDrawable> leafList = nodeDrawableCollector.collect();
         boolean done = false;
         for (int i = 0; i < leafList.size(); i++){
             ArrayList<SynSet> synSets = getCandidateSynSets(turkishWordNet, fsm, leafList, i);
             int maxIntersection = -1;
-            int maxIndex = -1;
             for (int j = 0; j < synSets.size(); j++){
                 SynSet synSet = synSets.get(j);
                 int intersectionCount = intersection(synSet,leafList);
                 if (intersectionCount > maxIntersection){
                     maxIntersection = intersectionCount;
-                    maxIndex = j;
                 }
             }
-            if (maxIndex != -1){
-                leafList.get(i).getLayerInfo().setLayerData(ViewLayerType.SEMANTICS, synSets.get(maxIndex).getId());
+            ArrayList<SynSet> maxSynSets = new ArrayList<SynSet>();
+            for (int j = 0; j < synSets.size(); j++){
+                SynSet synSet = synSets.get(j);
+                if (intersection(synSet,leafList) == maxIntersection){
+                    maxSynSets.add(synSet);
+                }
+            }
+            if (maxSynSets.size() > 0){
+                leafList.get(i).getLayerInfo().setLayerData(ViewLayerType.SEMANTICS, maxSynSets.get(random.nextInt(maxSynSets.size())).getId());
                 done = true;
             }
         }

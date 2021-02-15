@@ -40,7 +40,7 @@ public class TestLesk {
             }
         }
         assertEquals(549, total);
-        assertEquals(262, correct);
+        assertEquals(264, correct);
     }
 
 }
