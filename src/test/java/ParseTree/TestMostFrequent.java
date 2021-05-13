@@ -52,7 +52,7 @@ public class TestMostFrequent {
             }
         }
         assertEquals(475, total);
-        assertEquals(265, correct);
+        assertEquals(262, correct);
     }
 
 }
