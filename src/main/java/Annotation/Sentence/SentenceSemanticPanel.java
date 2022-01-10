@@ -66,6 +66,35 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
         setFocusable(false);
     }
 
+    @Override
+    protected void setWordLayer() {
+    }
+
+    @Override
+    protected void setBounds() {
+        pane.setBounds(((AnnotatedWord)sentence.getWord(selectedWordIndex)).getArea().x, ((AnnotatedWord)sentence.getWord(selectedWordIndex)).getArea().y + ((AnnotatedWord)sentence.getWord(selectedWordIndex)).getArea().height, 120, (int) (Toolkit.getDefaultToolkit().getScreenSize().height * 0.4));
+    }
+
+    @Override
+    protected void drawLayer(AnnotatedWord word, Graphics g, int currentLeft, int lineIndex, int wordIndex, int maxSize, ArrayList<Integer> wordSize, ArrayList<Integer> wordTotal) {
+        if (word.getSemantic() != null){
+            String correct = word.getSemantic();
+            g.drawString(correct, currentLeft, (lineIndex + 1) * lineSpace + 30);
+        }
+    }
+
+    @Override
+    protected int getMaxLayerLength(AnnotatedWord word, Graphics g) {
+        int maxSize = g.getFontMetrics().stringWidth(word.getName());
+        if (word.getSemantic() != null){
+            int size = g.getFontMetrics().stringWidth(word.getSemantic());
+            if (size > maxSize){
+                maxSize = size;
+            }
+        }
+        return maxSize;
+    }
+
     public void autoDetect(){
         turkishSentenceAutoSemantic.autoSemantic(sentence);
         sentence.save();
@@ -109,7 +138,7 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
         g.setColor(Color.BLUE);
         for (int i = 0; i < sentence.wordCount(); i++){
             word = (AnnotatedWord) sentence.getWord(i);
-            int maxSize = maxLayerLength(word, g);
+            int maxSize = getMaxLayerLength(word, g);
             if (maxSize + currentLeft >= getWidth()){
                 lineIndex++;
                 currentLeft = wordSpace;
