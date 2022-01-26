@@ -76,6 +76,11 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
     }
 
     @Override
+    protected void setLineSpace() {
+        lineSpace = 80;
+    }
+
+    @Override
     protected void drawLayer(AnnotatedWord word, Graphics g, int currentLeft, int lineIndex, int wordIndex, int maxSize, ArrayList<Integer> wordSize, ArrayList<Integer> wordTotal) {
         if (word.getSemantic() != null){
             String correct = word.getSemantic();
