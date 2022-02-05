@@ -1,13 +1,14 @@
 package AutoProcessor.Sentence;
 
 import AnnotatedSentence.*;
+import AutoProcessor.AutoSemantic;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import WordNet.SynSet;
 import WordNet.WordNet;
 
 import java.util.ArrayList;
 
-public abstract class SentenceAutoSemantic {
+public abstract class SentenceAutoSemantic extends AutoSemantic {
     /**
      * The method should set the senses of all words, for which there is only one possible sense.
      * @param sentence The sentence for which word sense disambiguation will be determined automatically.

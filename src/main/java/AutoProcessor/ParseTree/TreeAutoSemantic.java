@@ -5,13 +5,14 @@ import AnnotatedTree.LayerInfo;
 import AnnotatedTree.ParseNodeDrawable;
 import AnnotatedTree.ParseTreeDrawable;
 import AnnotatedTree.WordNotExistsException;
+import AutoProcessor.AutoSemantic;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import WordNet.SynSet;
 import WordNet.WordNet;
 
 import java.util.ArrayList;
 
-public abstract class TreeAutoSemantic {
+public abstract class TreeAutoSemantic extends AutoSemantic {
     protected abstract boolean autoLabelSingleSemantics(ParseTreeDrawable parseTree);
 
     protected ArrayList<SynSet> getCandidateSynSets(WordNet wordNet, FsmMorphologicalAnalyzer fsm, ArrayList<ParseNodeDrawable> leafList, int index){
