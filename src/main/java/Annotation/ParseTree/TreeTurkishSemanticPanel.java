@@ -14,6 +14,7 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.util.ArrayList;
 
 public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
@@ -303,4 +304,51 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
         return false;
     }
 
+    protected int getStringSize(ParseNodeDrawable parseNode, Graphics g) {
+        int i, stringSize = 0;
+        if (parseNode.numberOfChildren() == 0) {
+            try {
+                stringSize = g.getFontMetrics().stringWidth(parseNode.getLayerData(ViewLayerType.TURKISH_WORD));
+                for (i = 0; i < parseNode.getLayerInfo().getNumberOfMeanings(); i++)
+                    if (g.getFontMetrics().stringWidth(parseNode.getLayerInfo().getSemanticAt(i).substring(6)) > stringSize){
+                        stringSize = g.getFontMetrics().stringWidth(parseNode.getLayerInfo().getSemanticAt(i).substring(6));
+                    }
+            } catch (LayerNotExistsException | WordNotExistsException e) {
+                e.printStackTrace();
+            }
+            return stringSize;
+        } else {
+            return g.getFontMetrics().stringWidth(parseNode.getData().getName());
+        }
+    }
+
+    protected void drawString(ParseNodeDrawable parseNode, Graphics g, int x, int y){
+        int i;
+        if (parseNode.numberOfChildren() == 0){
+            g.drawString(parseNode.getLayerData(ViewLayerType.TURKISH_WORD), x, y);
+            g.setColor(Color.RED);
+            for (i = 0; i < parseNode.getLayerInfo().getNumberOfMeanings(); i++){
+                try {
+                    y += 20;
+                    g.drawString(parseNode.getLayerInfo().getSemanticAt(i).substring(6), x, y);
+                } catch (LayerNotExistsException | WordNotExistsException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            g.drawString(parseNode.getData().getName(), x, y);
+        }
+    }
+
+    protected void setArea(ParseNodeDrawable parseNode, int x, int y, int stringSize){
+        if (parseNode.numberOfChildren() == 0){
+            try {
+                parseNode.setArea(x - 5, y - 15, stringSize + 10, 20 * (parseNode.getLayerInfo().getNumberOfWords() + 1));
+            } catch (LayerNotExistsException e) {
+                e.printStackTrace();
+            }
+        } else {
+            parseNode.setArea(x - 5, y - 15, stringSize + 10, 20);
+        }
+    }
 }

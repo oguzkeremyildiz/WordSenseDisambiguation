@@ -174,5 +174,38 @@ public class TreeEnglishSemanticPanel extends TreeLeafEditorPanel {
         }
     }
 
+    protected int getStringSize(ParseNodeDrawable parseNode, Graphics g) {
+        if (parseNode.numberOfChildren() == 0) {
+            String layerData = parseNode.getLayerData(ViewLayerType.ENGLISH_SEMANTICS);
+            if (layerData != null){
+                return g.getFontMetrics().stringWidth(layerData.substring(6, 14));
+            } else {
+                return 0;
+            }
+        } else {
+            return g.getFontMetrics().stringWidth(parseNode.getData().getName());
+        }
+    }
+
+    protected void drawString(ParseNodeDrawable parseNode, Graphics g, int x, int y){
+        if (parseNode.numberOfChildren() == 0){
+            g.drawString(parseNode.getLayerData(ViewLayerType.ENGLISH_WORD), x, y);
+            g.setColor(Color.RED);
+            String layerData = parseNode.getLayerData(ViewLayerType.ENGLISH_SEMANTICS);
+            if (layerData != null){
+                g.drawString(layerData.substring(6, 14), x, y + 20);
+            }
+        } else {
+            g.drawString(parseNode.getData().getName(), x, y);
+        }
+    }
+
+    protected void setArea(ParseNodeDrawable parseNode, int x, int y, int stringSize){
+        if (parseNode.numberOfChildren() == 0){
+            parseNode.setArea(x - 5, y - 15, stringSize + 10, 40);
+        } else {
+            parseNode.setArea(x - 5, y - 15, stringSize + 10, 20);
+        }
+    }
 
 }
