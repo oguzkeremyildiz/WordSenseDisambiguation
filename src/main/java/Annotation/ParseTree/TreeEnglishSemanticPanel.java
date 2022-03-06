@@ -180,7 +180,7 @@ public class TreeEnglishSemanticPanel extends TreeLeafEditorPanel {
             if (layerData != null){
                 return g.getFontMetrics().stringWidth(layerData.substring(6, 14));
             } else {
-                return 0;
+                return g.getFontMetrics().stringWidth(parseNode.getData().getName());
             }
         } else {
             return g.getFontMetrics().stringWidth(parseNode.getData().getName());
