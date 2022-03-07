@@ -157,7 +157,7 @@ public class TreeEnglishSemanticPanel extends TreeLeafEditorPanel {
         list.setVisible(true);
         pane.setVisible(true);
         pane.getVerticalScrollBar().setValue(0);
-        pane.setBounds(node.getArea().x - 5, node.getArea().y + 30, 300, 30 + Math.max(3, Math.min(15, listModel.getSize() + 1)) * 18);
+        pane.setBounds(node.getArea().getX() - 5, node.getArea().getY() + 30, 300, 30 + Math.max(3, Math.min(15, listModel.getSize() + 1)) * 18);
         this.repaint();
         isEditing = true;
     }

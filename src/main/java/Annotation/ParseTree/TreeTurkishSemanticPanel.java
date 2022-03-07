@@ -264,7 +264,7 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
         tree.setVisible(true);
         pane.setVisible(true);
         pane.getVerticalScrollBar().setValue(0);
-        pane.setBounds(node.getArea().x - 5, node.getArea().y + 30, 250, 30 + Math.max(3, Math.min(15, ((DefaultMutableTreeNode) treeModel.getRoot()).getChildCount() + 1)) * 18);
+        pane.setBounds(node.getArea().getX() - 5, node.getArea().getY() + 30, 250, 30 + Math.max(3, Math.min(15, ((DefaultMutableTreeNode) treeModel.getRoot()).getChildCount() + 1)) * 18);
         this.repaint();
         isEditing = true;
         tree.setCellRenderer(new ExampleTreeCellRenderer());
