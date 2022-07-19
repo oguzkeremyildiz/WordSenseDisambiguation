@@ -47,6 +47,11 @@ After annotating sentences, you can use [DataGenerator](https://github.com/starl
 
 After generating the classification dataset as above, one can use the [Classification](https://github.com/starlangsoftware/Classification) package to generate machine learning models for the Word Sense Disambiguation task.
 
+Class Diagram
+============
+
+<img src="classDiagram.png">
+
 For Developers
 ============
 
