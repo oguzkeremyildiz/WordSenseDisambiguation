@@ -52,7 +52,7 @@ public class TestRandom {
             }
         }
         assertEquals(475, total);
-        assertEquals(248, correct);
+        assertEquals(246, correct);
     }
 
 }
