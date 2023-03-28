@@ -32,7 +32,7 @@ public class MostFrequentSentenceAutoSemantic extends SentenceAutoSemantic {
      * @param sentence The sentence for which word sense disambiguation will be determined automatically.
      */
     @Override
-    protected boolean autoLabelSingleSemantics(AnnotatedSentence sentence) {
+    public boolean autoLabelSingleSemantics(AnnotatedSentence sentence) {
         boolean done = false;
         AnnotatedWord twoPrevious = null, previous = null, current, twoNext = null, next = null;
         for (int i = 0; i < sentence.wordCount(); i++) {
