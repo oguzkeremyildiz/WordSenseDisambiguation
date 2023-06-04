@@ -72,7 +72,7 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
 
     @Override
     protected void setBounds() {
-        pane.setBounds(((AnnotatedWord)sentence.getWord(selectedWordIndex)).getArea().getX(), ((AnnotatedWord)sentence.getWord(selectedWordIndex)).getArea().getY() + ((AnnotatedWord)sentence.getWord(selectedWordIndex)).getArea().getHeight(), 120, (int) (Toolkit.getDefaultToolkit().getScreenSize().height * 0.4));
+        pane.setBounds(((AnnotatedWord)sentence.getWord(selectedWordIndex)).getArea().getX(), ((AnnotatedWord)sentence.getWord(selectedWordIndex)).getArea().getY() + ((AnnotatedWord)sentence.getWord(selectedWordIndex)).getArea().getHeight(), 400, (int) (Toolkit.getDefaultToolkit().getScreenSize().height * 0.4));
     }
 
     @Override

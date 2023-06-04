@@ -1,6 +1,7 @@
 package Annotation.Sentence;
 
 import WordNet.SynSet;
+import WordNet.WordNet;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -29,7 +30,11 @@ public class SemanticExampleTreeCellRenderer extends DefaultTreeCellRenderer {
                 examples += "</html>";
                 ((JComponent) cell).setToolTipText(examples);
             } else {
-                ((JComponent) cell).setToolTipText("");
+                if (synSet.getExample() != null){
+                    ((JComponent) cell).setToolTipText(synSet.getExample());
+                } else {
+                    ((JComponent) cell).setToolTipText("");
+                }
             }
         } else {
             ((JComponent) cell).setToolTipText("");
