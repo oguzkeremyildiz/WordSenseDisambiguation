@@ -53,6 +53,11 @@
             <version>1.0.53</version>
         </dependency>
         <dependency>
+            <groupId>io.github.starlangsoftware</groupId>
+            <artifactId>WordNet</artifactId>
+            <version>1.0.55</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.1</version>

@@ -200,13 +200,8 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
         getParent().invalidate();
     }
 
-
-    public int populateLeaf(AnnotatedSentence sentence, int wordIndex){
-        int selectedIndex = -1;
-        AnnotatedWord word = (AnnotatedWord) sentence.getWord(wordIndex);
-        DefaultMutableTreeNode selectedNode = null;
-        ((DefaultMutableTreeNode)treeModel.getRoot()).removeAllChildren();
-        treeModel.reload();
+    public ArrayList<SynSet> constructCandidateSynSets(AnnotatedWord word, int wordIndex){
+        ArrayList<SynSet> result = new ArrayList<SynSet>();
         for (int i = wordIndex - 4; i <= wordIndex; i++){
             if (i >= 0 && i + 4 < sentence.wordCount()){
                 AnnotatedWord word1 = (AnnotatedWord) sentence.getWord(i);
@@ -215,11 +210,7 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
                 AnnotatedWord word4 = (AnnotatedWord) sentence.getWord(i + 3);
                 AnnotatedWord word5 = (AnnotatedWord) sentence.getWord(i + 4);
                 if (word1.getParse() != null && word2.getParse() != null && word3.getParse() != null && word4.getParse() != null && word5.getParse() != null){
-                    ArrayList<SynSet> idioms = wordNet.constructIdiomSynSets(word1.getParse(), word2.getParse(), word3.getParse(), word4.getParse(), word5.getParse(), word1.getMetamorphicParse(), word2.getMetamorphicParse(), word3.getMetamorphicParse(), word4.getMetamorphicParse(), word5.getMetamorphicParse(), fsm);
-                    DefaultMutableTreeNode currentSelected = addSynSets(word, idioms);
-                    if (currentSelected != null){
-                        selectedNode = currentSelected;
-                    }
+                    result.addAll(wordNet.constructIdiomSynSets(word1.getParse(), word2.getParse(), word3.getParse(), word4.getParse(), word5.getParse(), word1.getMetamorphicParse(), word2.getMetamorphicParse(), word3.getMetamorphicParse(), word4.getMetamorphicParse(), word5.getMetamorphicParse(), fsm));
                 }
             }
         }
@@ -230,11 +221,7 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
                 AnnotatedWord word3 = (AnnotatedWord) sentence.getWord(i + 2);
                 AnnotatedWord word4 = (AnnotatedWord) sentence.getWord(i + 3);
                 if (word1.getParse() != null && word2.getParse() != null && word3.getParse() != null && word4.getParse() != null){
-                    ArrayList<SynSet> idioms = wordNet.constructIdiomSynSets(word1.getParse(), word2.getParse(), word3.getParse(), word4.getParse(), word1.getMetamorphicParse(), word2.getMetamorphicParse(), word3.getMetamorphicParse(), word4.getMetamorphicParse(), fsm);
-                    DefaultMutableTreeNode currentSelected = addSynSets(word, idioms);
-                    if (currentSelected != null){
-                        selectedNode = currentSelected;
-                    }
+                    result.addAll(wordNet.constructIdiomSynSets(word1.getParse(), word2.getParse(), word3.getParse(), word4.getParse(), word1.getMetamorphicParse(), word2.getMetamorphicParse(), word3.getMetamorphicParse(), word4.getMetamorphicParse(), fsm));
                 }
             }
         }
@@ -244,11 +231,7 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
                 AnnotatedWord word2 = (AnnotatedWord) sentence.getWord(i + 1);
                 AnnotatedWord word3 = (AnnotatedWord) sentence.getWord(i + 2);
                 if (word1.getParse() != null && word2.getParse() != null && word3.getParse() != null){
-                    ArrayList<SynSet> idioms = wordNet.constructIdiomSynSets(word1.getParse(), word2.getParse(), word3.getParse(), word1.getMetamorphicParse(), word2.getMetamorphicParse(), word3.getMetamorphicParse(), fsm);
-                    DefaultMutableTreeNode currentSelected = addSynSets(word, idioms);
-                    if (currentSelected != null){
-                        selectedNode = currentSelected;
-                    }
+                    result.addAll(wordNet.constructIdiomSynSets(word1.getParse(), word2.getParse(), word3.getParse(), word1.getMetamorphicParse(), word2.getMetamorphicParse(), word3.getMetamorphicParse(), fsm));
                 }
             }
         }
@@ -257,20 +240,26 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
                 AnnotatedWord word1 = (AnnotatedWord) sentence.getWord(i);
                 AnnotatedWord word2 = (AnnotatedWord) sentence.getWord(i + 1);
                 if (word1.getParse() != null && word2.getParse() != null){
-                    ArrayList<SynSet> idioms = wordNet.constructIdiomSynSets(word1.getParse(), word2.getParse(), word1.getMetamorphicParse(), word2.getMetamorphicParse(), fsm);
-                    DefaultMutableTreeNode currentSelected = addSynSets(word, idioms);
-                    if (currentSelected != null){
-                        selectedNode = currentSelected;
-                    }
+                    result.addAll(wordNet.constructIdiomSynSets(word1.getParse(), word2.getParse(), word1.getMetamorphicParse(), word2.getMetamorphicParse(), fsm));
                 }
             }
         }
         if (word.getParse() != null){
-            ArrayList<SynSet> synSets = wordNet.constructSynSets(word.getParse().getWord().getName(), word.getParse(), word.getMetamorphicParse(), fsm);
-            DefaultMutableTreeNode currentSelected = addSynSets(word, synSets);
-            if (currentSelected != null){
-                selectedNode = currentSelected;
-            }
+            result.addAll(wordNet.constructSynSets(word.getParse().getWord().getName(), word.getParse(), word.getMetamorphicParse(), fsm));
+        }
+        return result;
+    }
+
+    public int populateLeaf(AnnotatedSentence sentence, int wordIndex){
+        int selectedIndex = -1;
+        AnnotatedWord word = (AnnotatedWord) sentence.getWord(wordIndex);
+        DefaultMutableTreeNode selectedNode = null;
+        ((DefaultMutableTreeNode)treeModel.getRoot()).removeAllChildren();
+        treeModel.reload();
+        ArrayList<SynSet> candidates = constructCandidateSynSets(word, wordIndex);
+        DefaultMutableTreeNode currentSelected = addSynSets(word, candidates);
+        if (currentSelected != null){
+            selectedNode = currentSelected;
         }
         treeModel.reload();
         if (selectedNode != null){
