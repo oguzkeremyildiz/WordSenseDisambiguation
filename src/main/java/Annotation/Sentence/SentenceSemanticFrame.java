@@ -16,10 +16,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Properties;
+import java.util.*;
 
 public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
     private JCheckBox autoSemanticDetectionOption;
@@ -27,26 +24,46 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
     private WordNet wordNet;
     private HashMap<String, HashSet<String>> exampleSentences;
 
-    public SentenceSemanticFrame(final FsmMorphologicalAnalyzer fsm, final WordNet wordNet){
+    public SentenceSemanticFrame(final FsmMorphologicalAnalyzer fsm, final WordNet wordNet) {
         super();
         exampleSentences = new HashMap<>();
         this.fsm = fsm;
         this.wordNet = wordNet;
         AnnotatedCorpus corpus;
-        corpus = new AnnotatedCorpus(new File(TreeEditorPanel.phrasePath));
-        for (int i = 0; i < corpus.sentenceCount(); i++){
+        String subFolder = "false";
+        String domainPrefix = "";
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileInputStream(new File("config.properties")));
+            domainPrefix = properties.getProperty("domainPrefix");
+            subFolder = properties.getProperty("subFolder");
+        } catch (IOException f) {
+        }
+        if (subFolder.equals("false")){
+            corpus = new AnnotatedCorpus(new File(TreeEditorPanel.phrasePath));
+        } else {
+            corpus = new AnnotatedCorpus();
+            File[] listOfFiles = new File(TreeEditorPanel.phrasePath).listFiles();
+            Arrays.sort(listOfFiles);
+            for (File file:listOfFiles){
+                if (file.isDirectory() && !file.isHidden()){
+                    corpus.combine(new AnnotatedCorpus(file));
+                }
+            }
+        }
+        for (int i = 0; i < corpus.sentenceCount(); i++) {
             AnnotatedSentence sentence = (AnnotatedSentence) corpus.getSentence(i);
-            for (int j = 0; j < sentence.wordCount(); j++){
+            for (int j = 0; j < sentence.wordCount(); j++) {
                 AnnotatedWord word = (AnnotatedWord) sentence.getWord(j);
                 String semantic = word.getSemantic();
-                if (semantic != null){
+                if (semantic != null) {
                     HashSet<String> sentences;
-                    if (exampleSentences.containsKey(semantic)){
+                    if (exampleSentences.containsKey(semantic)) {
                         sentences = exampleSentences.get(semantic);
                     } else {
                         sentences = new HashSet<>();
                     }
-                    if (sentences.size() < 20){
+                    if (sentences.size() < 20) {
                         sentences.add(sentence.toWords());
                     }
                     exampleSentences.put(semantic, sentences);
@@ -54,23 +71,18 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
             }
         }
         JMenuItem itemUpdateDictionary = addMenuItem(projectMenu, "Update Wordnet", KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
+        String finalDomainPrefix = domainPrefix;
         itemUpdateDictionary.addActionListener(e -> {
-            Properties properties = new Properties();
-            try {
-                properties.load(new FileInputStream(new File("config.properties")));
-                String domainPrefix = properties.getProperty("domainPrefix");
-                String domainWordNetFileName = domainPrefix + "_wordnet.xml";
-                String domainDictionaryFileName = domainPrefix + "_dictionary.txt";
-                this.fsm = new FsmMorphologicalAnalyzer(domainDictionaryFileName);
-                this.wordNet = new WordNet(domainWordNetFileName, new Locale("tr"));
-                TurkishSentenceAutoSemantic turkishSentenceAutoSemantic = new TurkishSentenceAutoSemantic(this.wordNet, this.fsm);
-                for (int i = 0; i < projectPane.getTabCount(); i++){
-                    SentenceSemanticPanel current = (SentenceSemanticPanel) ((JScrollPane) projectPane.getComponentAt(i)).getViewport().getView();
-                    current.setFsm(this.fsm);
-                    current.setWordnet(this.wordNet);
-                    current.setTurkishSentenceAutoSemantic(turkishSentenceAutoSemantic);
-                }
-            } catch (IOException f) {
+            String domainWordNetFileName = finalDomainPrefix + "_wordnet.xml";
+            String domainDictionaryFileName = finalDomainPrefix + "_dictionary.txt";
+            this.fsm = new FsmMorphologicalAnalyzer(domainDictionaryFileName);
+            this.wordNet = new WordNet(domainWordNetFileName, new Locale("tr"));
+            TurkishSentenceAutoSemantic turkishSentenceAutoSemantic = new TurkishSentenceAutoSemantic(this.wordNet, this.fsm);
+            for (int i = 0; i < projectPane.getTabCount(); i++) {
+                SentenceSemanticPanel current = (SentenceSemanticPanel) ((JScrollPane) projectPane.getComponentAt(i)).getViewport().getView();
+                current.setFsm(this.fsm);
+                current.setWordnet(this.wordNet);
+                current.setTurkishSentenceAutoSemantic(turkishSentenceAutoSemantic);
             }
         });
         JMenuItem itemAutoAnnotate = addMenuItem(projectMenu, "Annotate Every Word With Last Sense", KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
@@ -79,18 +91,18 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
             int wordCount = 0, fileCount = 0;
             current = (SentenceSemanticPanel) ((JScrollPane) projectPane.getSelectedComponent()).getViewport().getView();
             AnnotatedWord clickedWord = current.getClickedWord();
-            for (int i = 0; i < corpus.sentenceCount(); i++){
+            for (int i = 0; i < corpus.sentenceCount(); i++) {
                 AnnotatedSentence sentence = (AnnotatedSentence) corpus.getSentence(i);
                 boolean modified = false;
-                for (int j = 0; j < sentence.wordCount(); j++){
+                for (int j = 0; j < sentence.wordCount(); j++) {
                     AnnotatedWord word = (AnnotatedWord) sentence.getWord(j);
                     String semantic = word.getSemantic();
-                    if (word.getName() != null && word.getName().equals(clickedWord.getName()) && semantic == null){
+                    if (word.getName() != null && word.getName().equals(clickedWord.getName()) && semantic == null) {
                         wordCount++;
                         modified = true;
                     }
                 }
-                if (modified){
+                if (modified) {
                     fileCount++;
                 }
             }
@@ -98,19 +110,19 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
                     wordCount + " words in " + fileCount + " files with text (" + clickedWord.getName() + ") will be modified. Are you sure?",
                     "",
                     JOptionPane.YES_NO_OPTION);
-            if (result == JOptionPane.YES_OPTION){
-                for (int i = 0; i < corpus.sentenceCount(); i++){
+            if (result == JOptionPane.YES_OPTION) {
+                for (int i = 0; i < corpus.sentenceCount(); i++) {
                     AnnotatedSentence sentence = (AnnotatedSentence) corpus.getSentence(i);
                     boolean modified = false;
-                    for (int j = 0; j < sentence.wordCount(); j++){
+                    for (int j = 0; j < sentence.wordCount(); j++) {
                         AnnotatedWord word = (AnnotatedWord) sentence.getWord(j);
                         String semantic = word.getSemantic();
-                        if (word.getName() != null && word.getName().equals(clickedWord.getName()) && semantic == null){
+                        if (word.getName() != null && word.getName().equals(clickedWord.getName()) && semantic == null) {
                             word.setSemantic(clickedWord.getSemantic());
                             modified = true;
                         }
                     }
-                    if (modified){
+                    if (modified) {
                         sentence.save();
                     }
                 }
@@ -122,16 +134,16 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
             String result = JOptionPane.showInputDialog(null, "How many sentences you want to see:", "",
                     JOptionPane.PLAIN_MESSAGE);
             int numberOfSentences = Integer.parseInt(result);
-            for (int i = 0; i < corpus.sentenceCount(); i++){
+            for (int i = 0; i < corpus.sentenceCount(); i++) {
                 AnnotatedSentence sentence = (AnnotatedSentence) corpus.getSentence(i);
-                for (int j = 0; j < sentence.wordCount(); j++){
+                for (int j = 0; j < sentence.wordCount(); j++) {
                     AnnotatedWord word = (AnnotatedWord) sentence.getWord(j);
                     String semantic = word.getSemantic();
-                    if (word.getName() != null && semantic == null){
+                    if (word.getName() != null && semantic == null) {
                         SentenceAnnotatorPanel annotatorPanel = generatePanel(TreeEditorPanel.phrasePath, sentence.getFileName());
                         addPanelToFrame(annotatorPanel, sentence.getFileName());
                         count++;
-                        if (count == numberOfSentences){
+                        if (count == numberOfSentences) {
                             return;
                         }
                         break;
@@ -152,20 +164,20 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
         return new SentenceSemanticPanel(currentPath, rawFileName, fsm, wordNet, exampleSentences);
     }
 
-    public void next(int count){
+    public void next(int count) {
         super.next(count);
         SentenceSemanticPanel current;
         current = (SentenceSemanticPanel) ((JScrollPane) projectPane.getSelectedComponent()).getViewport().getView();
-        if (autoSemanticDetectionOption.isSelected()){
+        if (autoSemanticDetectionOption.isSelected()) {
             current.autoDetect();
         }
     }
 
-    public void previous(int count){
+    public void previous(int count) {
         super.previous(count);
         SentenceSemanticPanel current;
         current = (SentenceSemanticPanel) ((JScrollPane) projectPane.getSelectedComponent()).getViewport().getView();
-        if (autoSemanticDetectionOption.isSelected()){
+        if (autoSemanticDetectionOption.isSelected()) {
             current.autoDetect();
         }
     }

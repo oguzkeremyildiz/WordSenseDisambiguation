@@ -3,7 +3,6 @@ package Annotation.Sentence;
 import AnnotatedSentence.AnnotatedCorpus;
 import AnnotatedSentence.AnnotatedSentence;
 import AnnotatedSentence.AnnotatedWord;
-import DataCollector.ParseTree.TreeEditorPanel;
 import DataCollector.Sentence.ViewSentenceAnnotationFrame;
 import WordNet.SynSet;
 import WordNet.WordNet;
@@ -137,7 +136,8 @@ public class ViewSentenceSemanticAnnotationFrame extends ViewSentenceAnnotationF
                     int row = dataTable.rowAtPoint(evt.getPoint());
                     if (row >= 0) {
                         String fileName = data.get(row).get(0);
-                        sentenceSemanticFrame.addPanelToFrame(sentenceSemanticFrame.generatePanel(TreeEditorPanel.phrasePath, fileName), fileName);
+                        AnnotatedSentence sentence = (AnnotatedSentence) corpus.getSentence(Integer.parseInt(data.get(row).get(COLOR_COLUMN_INDEX - 1)));
+                        sentenceSemanticFrame.addPanelToFrame(sentenceSemanticFrame.generatePanel(sentence.getFile().getParent(), fileName), fileName);
                     }
                 }
             }
