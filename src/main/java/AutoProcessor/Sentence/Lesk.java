@@ -10,8 +10,8 @@ import java.util.Random;
 
 public class Lesk extends SentenceAutoSemantic{
 
-    private WordNet turkishWordNet;
-    private FsmMorphologicalAnalyzer fsm;
+    private final WordNet turkishWordNet;
+    private final FsmMorphologicalAnalyzer fsm;
 
     /**
      * Constructor for the {@link Lesk} class. Gets the Turkish wordnet and Turkish fst based
@@ -50,21 +50,19 @@ public class Lesk extends SentenceAutoSemantic{
         for (int i = 0; i < sentence.wordCount(); i++) {
             ArrayList<SynSet> synSets = getCandidateSynSets(turkishWordNet, fsm, sentence, i);
             int maxIntersection = -1;
-            for (int j = 0; j < synSets.size(); j++){
-                SynSet synSet = synSets.get(j);
+            for (SynSet synSet : synSets) {
                 int intersectionCount = intersection(synSet, sentence);
-                if (intersectionCount > maxIntersection){
+                if (intersectionCount > maxIntersection) {
                     maxIntersection = intersectionCount;
                 }
             }
-            ArrayList<SynSet> maxSynSets = new ArrayList<SynSet>();
-            for (int j = 0; j < synSets.size(); j++){
-                SynSet synSet = synSets.get(j);
-                if (intersection(synSet, sentence) == maxIntersection){
+            ArrayList<SynSet> maxSynSets = new ArrayList<>();
+            for (SynSet synSet : synSets) {
+                if (intersection(synSet, sentence) == maxIntersection) {
                     maxSynSets.add(synSet);
                 }
             }
-            if (maxSynSets.size() > 0){
+            if (!maxSynSets.isEmpty()){
                 done = true;
                 ((AnnotatedWord) sentence.getWord(i)).setSemantic(maxSynSets.get(random.nextInt(maxSynSets.size())).getId());
             }

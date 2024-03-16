@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class MostFrequentSentenceAutoSemantic extends SentenceAutoSemantic {
 
-    private WordNet turkishWordNet;
-    private FsmMorphologicalAnalyzer fsm;
+    private final WordNet turkishWordNet;
+    private final FsmMorphologicalAnalyzer fsm;
 
     /**
      * Constructor for the {@link MostFrequentSentenceAutoSemantic} class. Gets the Turkish wordnet and Turkish fst based
@@ -52,7 +52,7 @@ public class MostFrequentSentenceAutoSemantic extends SentenceAutoSemantic {
             if (current.getSemantic() == null && current.getParse() != null) {
                 if (twoPrevious != null && twoPrevious.getParse() != null && previous.getParse() != null) {
                     ArrayList<Literal> literals = turkishWordNet.constructIdiomLiterals(twoPrevious.getParse(), previous.getParse(), current.getParse(), twoPrevious.getMetamorphicParse(), previous.getMetamorphicParse(), current.getMetamorphicParse(), fsm);
-                    if (literals.size() > 0) {
+                    if (!literals.isEmpty()) {
                         SynSet bestSynset = mostFrequent(literals);
                         if (bestSynset != null){
                             current.setSemantic(bestSynset.getId());
@@ -63,7 +63,7 @@ public class MostFrequentSentenceAutoSemantic extends SentenceAutoSemantic {
                 }
                 if (previous != null && previous.getParse() != null && next != null && next.getParse() != null) {
                     ArrayList<Literal> literals = turkishWordNet.constructIdiomLiterals(previous.getParse(), current.getParse(), next.getParse(), previous.getMetamorphicParse(), current.getMetamorphicParse(), next.getMetamorphicParse(), fsm);
-                    if (literals.size() > 0) {
+                    if (!literals.isEmpty()) {
                         SynSet bestSynset = mostFrequent(literals);
                         if (bestSynset != null) {
                             current.setSemantic(bestSynset.getId());
@@ -74,7 +74,7 @@ public class MostFrequentSentenceAutoSemantic extends SentenceAutoSemantic {
                 }
                 if (next != null && next.getParse() != null && twoNext != null && twoNext.getParse() != null) {
                     ArrayList<Literal> literals = turkishWordNet.constructIdiomLiterals(current.getParse(), next.getParse(), twoNext.getParse(), current.getMetamorphicParse(), next.getMetamorphicParse(), twoNext.getMetamorphicParse(), fsm);
-                    if (literals.size() > 0) {
+                    if (!literals.isEmpty()) {
                         SynSet bestSynset = mostFrequent(literals);
                         if (bestSynset != null) {
                             current.setSemantic(bestSynset.getId());
@@ -85,7 +85,7 @@ public class MostFrequentSentenceAutoSemantic extends SentenceAutoSemantic {
                 }
                 if (previous != null && previous.getParse() != null) {
                     ArrayList<Literal> literals = turkishWordNet.constructIdiomLiterals(previous.getParse(), current.getParse(), previous.getMetamorphicParse(), current.getMetamorphicParse(), fsm);
-                    if (literals.size() > 0) {
+                    if (!literals.isEmpty()) {
                         SynSet bestSynset = mostFrequent(literals);
                         if (bestSynset != null) {
                             current.setSemantic(bestSynset.getId());
@@ -96,7 +96,7 @@ public class MostFrequentSentenceAutoSemantic extends SentenceAutoSemantic {
                 }
                 if (current.getSemantic() == null && next != null && next.getParse() != null) {
                     ArrayList<Literal> literals = turkishWordNet.constructIdiomLiterals(current.getParse(), next.getParse(), current.getMetamorphicParse(), next.getMetamorphicParse(), fsm);
-                    if (literals.size() > 0) {
+                    if (!literals.isEmpty()) {
                         SynSet bestSynset = mostFrequent(literals);
                         if (bestSynset != null) {
                             current.setSemantic(bestSynset.getId());
@@ -106,7 +106,7 @@ public class MostFrequentSentenceAutoSemantic extends SentenceAutoSemantic {
                     }
                 }
                 ArrayList<Literal> literals = turkishWordNet.constructLiterals(current.getParse().getWord().getName(), current.getParse(), current.getMetamorphicParse(), fsm);
-                if (current.getSemantic() == null && literals.size() > 0) {
+                if (current.getSemantic() == null && !literals.isEmpty()) {
                     SynSet bestSynset = mostFrequent(literals);
                     if (bestSynset != null) {
                         current.setSemantic(bestSynset.getId());

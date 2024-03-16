@@ -17,7 +17,7 @@ public abstract class TreeAutoSemantic extends AutoSemantic {
 
     protected ArrayList<SynSet> getCandidateSynSets(WordNet wordNet, FsmMorphologicalAnalyzer fsm, ArrayList<ParseNodeDrawable> leafList, int index){
         LayerInfo twoPrevious = null, previous = null, current, twoNext = null, next = null;
-        ArrayList<SynSet> synSets = new ArrayList<SynSet>();
+        ArrayList<SynSet> synSets = new ArrayList<>();
         current = leafList.get(index).getLayerInfo();
         if (index > 1){
             twoPrevious = leafList.get(index - 2).getLayerInfo();
@@ -54,8 +54,7 @@ public abstract class TreeAutoSemantic extends AutoSemantic {
                 synSets.addAll(wordNet.constructIdiomSynSets(current.getMorphologicalParseAt(0), next.getMorphologicalParseAt(0),
                         current.getMetamorphicParseAt(0), next.getMetamorphicParseAt(0), fsm));
             }
-        } catch (LayerNotExistsException | WordNotExistsException e) {
-            e.printStackTrace();
+        } catch (LayerNotExistsException | WordNotExistsException ignored) {
         }
         return synSets;
     }

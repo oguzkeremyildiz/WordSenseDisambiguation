@@ -15,8 +15,8 @@ import WordNet.WordNet;
 import java.util.ArrayList;
 
 public class TurkishTreeAutoSemantic extends TreeAutoSemantic {
-    private WordNet turkishWordNet;
-    private FsmMorphologicalAnalyzer fsm;
+    private final WordNet turkishWordNet;
+    private final FsmMorphologicalAnalyzer fsm;
 
     public TurkishTreeAutoSemantic(WordNet turkishWordNet, FsmMorphologicalAnalyzer fsm){
         this.turkishWordNet = turkishWordNet;
@@ -55,8 +55,7 @@ public class TurkishTreeAutoSemantic extends TreeAutoSemantic {
                             }
                             break;
                     }
-                } catch (LayerNotExistsException | WordNotExistsException e) {
-                    e.printStackTrace();
+                } catch (LayerNotExistsException | WordNotExistsException ignored) {
                 }
             }
         }

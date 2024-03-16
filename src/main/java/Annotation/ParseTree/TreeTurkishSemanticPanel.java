@@ -19,10 +19,10 @@ import java.util.ArrayList;
 
 public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
 
-    private JTree tree;
-    private DefaultTreeModel treeModel;
-    private WordNet wordNet;
-    private FsmMorphologicalAnalyzer fsm;
+    private final JTree tree;
+    private final DefaultTreeModel treeModel;
+    private final WordNet wordNet;
+    private final FsmMorphologicalAnalyzer fsm;
     private ArrayList<SynSet>[] meanings;
     private ArrayList<SynSet> idioms, idioms1, idioms2;
 
@@ -44,17 +44,17 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
                     tree.setVisible(false);
                 } else {
                     ArrayList<String> selectedMeanings = getSelectedMeanings(node);
-                    if (selectedMeanings.size() > 0) {
-                        String semantics = selectedMeanings.get(0);
+                    if (!selectedMeanings.isEmpty()) {
+                        StringBuilder semantics = new StringBuilder(selectedMeanings.get(0));
                         for (int i = 1; i < selectedMeanings.size(); i++) {
-                            semantics = semantics + "$" + selectedMeanings.get(i);
+                            semantics.append("$").append(selectedMeanings.get(i));
                         }
                         if (selectedMeanings.size() == 1 && previousNode.getLayerData(ViewLayerType.SEMANTICS) != null){
-                            if (currentTree.updateConnectedPredicate(previousNode.getLayerData(ViewLayerType.SEMANTICS), semantics)){
+                            if (currentTree.updateConnectedPredicate(previousNode.getLayerData(ViewLayerType.SEMANTICS), semantics.toString())){
                                 currentTree.save();
                             }
                         }
-                        LayerAction action = new LayerAction(((TreeTurkishSemanticPanel) tree.getParent().getParent().getParent()), previousNode.getLayerInfo(), semantics, ViewLayerType.SEMANTICS);
+                        LayerAction action = new LayerAction(((TreeTurkishSemanticPanel) tree.getParent().getParent().getParent()), previousNode.getLayerInfo(), semantics.toString(), ViewLayerType.SEMANTICS);
                         setAction(action);
                         tree.setVisible(false);
                     }
@@ -74,13 +74,13 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
         switch (meanings.length){
             case 1:
                 if (node.getLevel() == 1){
-                    if (idioms1.size() > 0 && node.getParent().getIndex(node) < idioms1.size()){
+                    if (!idioms1.isEmpty() && node.getParent().getIndex(node) < idioms1.size()){
                         selectedMeanings.add(idioms1.get(node.getParent().getIndex(node)).getId());
                     } else {
-                        if (idioms2.size() > 0 && node.getParent().getIndex(node) < idioms1.size() + idioms2.size()){
+                        if (!idioms2.isEmpty() && node.getParent().getIndex(node) < idioms1.size() + idioms2.size()){
                             selectedMeanings.add(idioms2.get(node.getParent().getIndex(node) - idioms1.size()).getId());
                         } else {
-                            if (meanings[0].size() > 0){
+                            if (!meanings[0].isEmpty()){
                                 selectedMeanings.add(meanings[0].get(node.getParent().getIndex(node) - idioms1.size() - idioms2.size()).getId());
                             }
                         }
@@ -91,7 +91,7 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
                 if (node.getLevel() == 1 && node.getParent().getIndex(node) < idioms.size()){
                     selectedMeanings.add(idioms.get(node.getParent().getIndex(node)).getId());
                 } else {
-                    if (meanings[0].size() > 0 && meanings[1].size() > 0 && node.getLevel() == 2){
+                    if (!meanings[0].isEmpty() && !meanings[1].isEmpty() && node.getLevel() == 2){
                         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node.getParent();
                         selectedMeanings.add(meanings[0].get((parentNode.getParent().getIndex(parentNode) - idioms.size())).getId());
                         selectedMeanings.add(meanings[1].get(node.getParent().getIndex(node)).getId());
@@ -116,7 +116,7 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
                             }
                         }
                     } else {
-                        if (meanings[0].size() > 0 && meanings[1].size() > 0 && meanings[2].size() > 0 && node.getLevel() == 3) {
+                        if (!meanings[0].isEmpty() && !meanings[1].isEmpty() && !meanings[2].isEmpty() && node.getLevel() == 3) {
                             DefaultMutableTreeNode grandParentNode = (DefaultMutableTreeNode) parentNode.getParent();
                             selectedMeanings.add(meanings[0].get(grandParentNode.getParent().getIndex(grandParentNode) - idioms.size() - idioms1.size()).getId());
                             selectedMeanings.add(meanings[1].get(parentNode.getParent().getIndex(parentNode) - idioms2.size()).getId());
@@ -172,7 +172,7 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
                         } else {
                             idioms2 = new ArrayList<>();
                         }
-                        if (idioms1.size() != 0 || idioms2.size() != 0 || meanings[0].size() != 0){
+                        if (!idioms1.isEmpty() || !idioms2.isEmpty() || !meanings[0].isEmpty()){
                             for (SynSet meaning: meanings[0]){
                                 DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(meaning);
                                 ((DefaultMutableTreeNode) treeModel.getRoot()).add(childNode);
@@ -191,7 +191,7 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
                                 selectedNode = childNode;
                             }
                         }
-                        if (meanings[0].size() != 0 && meanings[1].size() != 0){
+                        if (!meanings[0].isEmpty() && !meanings[1].isEmpty()){
                             for (SynSet meaning0: meanings[0]){
                                 DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(meaning0);
                                 ((DefaultMutableTreeNode) treeModel.getRoot()).add(childNode);
@@ -227,7 +227,7 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
                             }
                         }
                         idioms2 = wordNet.constructIdiomSynSets(info.getMorphologicalParseAt(1), info.getMorphologicalParseAt(2), info.getMetamorphicParseAt(1), info.getMetamorphicParseAt(2), fsm);
-                        if (meanings[0].size() != 0 && meanings[1].size() != 0 && meanings[2].size() != 0){
+                        if (!meanings[0].isEmpty() && !meanings[1].isEmpty() && !meanings[2].isEmpty()){
                             for (SynSet meaning0: meanings[0]){
                                 DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(meaning0);
                                 ((DefaultMutableTreeNode) treeModel.getRoot()).add(childNode);
@@ -253,8 +253,7 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
                         }
                         break;
                 }
-            } catch (WordNotExistsException | LayerNotExistsException e) {
-                e.printStackTrace();
+            } catch (WordNotExistsException | LayerNotExistsException ignored) {
             }
         }
         treeModel.reload();
@@ -297,8 +296,7 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
                         }
                     }
                 }
-            } catch (LayerNotExistsException | WordNotExistsException e) {
-                e.printStackTrace();
+            } catch (LayerNotExistsException | WordNotExistsException ignored) {
             }
         }
         return false;
@@ -313,8 +311,7 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
                     if (g.getFontMetrics().stringWidth(parseNode.getLayerInfo().getSemanticAt(i).substring(6)) > stringSize){
                         stringSize = g.getFontMetrics().stringWidth(parseNode.getLayerInfo().getSemanticAt(i).substring(6));
                     }
-            } catch (LayerNotExistsException | WordNotExistsException e) {
-                e.printStackTrace();
+            } catch (LayerNotExistsException | WordNotExistsException ignored) {
             }
             return stringSize;
         } else {
@@ -331,8 +328,8 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
                 try {
                     y += 20;
                     g.drawString(parseNode.getLayerInfo().getSemanticAt(i).substring(6), x, y);
-                } catch (LayerNotExistsException | WordNotExistsException e) {
-                    e.printStackTrace();
+                } catch (LayerNotExistsException | WordNotExistsException ignored) {
+
                 }
             }
         } else {
@@ -344,8 +341,7 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
         if (parseNode.numberOfChildren() == 0){
             try {
                 parseNode.setArea(x - 5, y - 15, stringSize + 10, 20 * (parseNode.getLayerInfo().getNumberOfWords() + 1));
-            } catch (LayerNotExistsException e) {
-                e.printStackTrace();
+            } catch (LayerNotExistsException ignored) {
             }
         } else {
             parseNode.setArea(x - 5, y - 15, stringSize + 10, 20);

@@ -14,7 +14,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class ViewSentenceSemanticAnnotationFrame extends ViewSentenceAnnotationFrame implements ActionListener {
-    private WordNet domainWordNet, turkish;
+    private final WordNet domainWordNet;
+    private final WordNet turkish;
 
     @Override
     public void actionPerformed(ActionEvent e) {

@@ -17,7 +17,7 @@ public abstract class SentenceAutoSemantic extends AutoSemantic {
 
     protected ArrayList<SynSet> getCandidateSynSets(WordNet wordNet, FsmMorphologicalAnalyzer fsm, AnnotatedSentence sentence, int index){
         AnnotatedWord twoPrevious = null, previous = null, current, twoNext = null, next = null;
-        ArrayList<SynSet> synSets = new ArrayList<SynSet>();
+        ArrayList<SynSet> synSets;
         current = (AnnotatedWord) sentence.getWord(index);
         if (index > 1){
             twoPrevious = (AnnotatedWord) sentence.getWord(index - 2);

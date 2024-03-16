@@ -7,23 +7,21 @@ import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import WordNet.WordNet;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
 public class TreeTurkishSemanticFrame extends TreeEditorFrame {
-    private WordNet wordNet;
-    private FsmMorphologicalAnalyzer fsm;
+    private final WordNet wordNet;
+    private final FsmMorphologicalAnalyzer fsm;
 
     public TreeTurkishSemanticFrame(final WordNet wordNet, final FsmMorphologicalAnalyzer fsm){
         this.setTitle("Turkish Semantic Editor");
         this.wordNet = wordNet;
         this.fsm = fsm;
         TreeBankDrawable treeBank = new TreeBankDrawable(new File(TreeEditorPanel.treePath));
-        JMenuItem itemViewAnnotations = addMenuItem(projectMenu, "View Annotations", KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
-        itemViewAnnotations.addActionListener(e -> {
-            new ViewTreeSemanticAnnotationFrame(treeBank, wordNet, fsm, this);
-        });
+        JMenuItem itemViewAnnotations = addMenuItem(projectMenu, "View Annotations", KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+        itemViewAnnotations.addActionListener(e -> new ViewTreeSemanticAnnotationFrame(treeBank, wordNet, fsm, this));
     }
 
     @Override

@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 public class MostFrequentTreeAutoSemantic extends TreeAutoSemantic{
 
-    private WordNet turkishWordNet;
-    private FsmMorphologicalAnalyzer fsm;
+    private final WordNet turkishWordNet;
+    private final FsmMorphologicalAnalyzer fsm;
 
     public MostFrequentTreeAutoSemantic(WordNet turkishWordNet, FsmMorphologicalAnalyzer fsm){
         this.turkishWordNet = turkishWordNet;
@@ -30,14 +30,13 @@ public class MostFrequentTreeAutoSemantic extends TreeAutoSemantic{
             ArrayList<SynSet> synSets;
             try {
                 synSets = getCandidateSynSets(turkishWordNet, fsm, leafList, i);
-                if (synSets.size() > 0){
+                if (!synSets.isEmpty()){
                     SynSet best = mostFrequent(synSets, leafList.get(i).getLayerInfo().getMorphologicalParseAt(0).getWord().getName());
                     if (best != null){
                         leafList.get(i).getLayerInfo().setLayerData(ViewLayerType.SEMANTICS, best.getId());
                     }
                 }
-            } catch (LayerNotExistsException | WordNotExistsException e) {
-                e.printStackTrace();
+            } catch (LayerNotExistsException | WordNotExistsException ignored) {
             }
         }
         return true;

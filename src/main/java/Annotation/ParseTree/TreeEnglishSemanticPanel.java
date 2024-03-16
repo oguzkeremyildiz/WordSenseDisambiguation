@@ -18,9 +18,10 @@ import java.util.HashMap;
 
 public class TreeEnglishSemanticPanel extends TreeLeafEditorPanel {
 
-    private WordNet englishWordNet, turkishWordNet;
-    private JList list;
-    private DefaultListModel listModel;
+    private final WordNet englishWordNet;
+    private final WordNet turkishWordNet;
+    private final JList list;
+    private final DefaultListModel listModel;
     private ArrayList<Integer> translatedSideCandidateList;
 
     public TreeEnglishSemanticPanel(String path, String fileName, WordNet englishWordNet, WordNet turkishWordNet) {
@@ -31,19 +32,17 @@ public class TreeEnglishSemanticPanel extends TreeLeafEditorPanel {
         listModel = new DefaultListModel();
         list = new JList(listModel);
         list.setVisible(false);
-        list.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                if (!listSelectionEvent.getValueIsAdjusting()) {
-                    if (list.getSelectedIndex() != -1 && previousNode != null) {
-                        previousNode.setSelected(false);
-                        LayerAction action = new LayerAction(((TreeEnglishSemanticPanel)((JList) listSelectionEvent.getSource()).getParent().getParent().getParent()), previousNode.getLayerInfo(), ((SynSet) list.getSelectedValue()).getId(), ViewLayerType.ENGLISH_SEMANTICS);
-                        actionList.add(action);
-                        action.execute();
-                        list.setVisible(false);
-                        pane.setVisible(false);
-                        isEditing = false;
-                        repaint();
-                    }
+        list.addListSelectionListener(listSelectionEvent -> {
+            if (!listSelectionEvent.getValueIsAdjusting()) {
+                if (list.getSelectedIndex() != -1 && previousNode != null) {
+                    previousNode.setSelected(false);
+                    LayerAction action = new LayerAction(((TreeEnglishSemanticPanel)((JList) listSelectionEvent.getSource()).getParent().getParent().getParent()), previousNode.getLayerInfo(), ((SynSet) list.getSelectedValue()).getId(), ViewLayerType.ENGLISH_SEMANTICS);
+                    actionList.add(action);
+                    action.execute();
+                    list.setVisible(false);
+                    pane.setVisible(false);
+                    isEditing = false;
+                    repaint();
                 }
             }
         });

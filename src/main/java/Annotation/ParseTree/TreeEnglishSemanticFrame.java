@@ -5,7 +5,8 @@ import DataCollector.ParseTree.TreeEditorPanel;
 import WordNet.*;
 
 public class TreeEnglishSemanticFrame extends TreeEditorFrame {
-    private WordNet englishWordNet, turkishWordNet;
+    private final WordNet englishWordNet;
+    private final WordNet turkishWordNet;
 
     public TreeEnglishSemanticFrame(final WordNet englishWordNet, final WordNet turkishWordNet){
         this.setTitle("English Semantic Editor");
@@ -17,4 +18,5 @@ public class TreeEnglishSemanticFrame extends TreeEditorFrame {
     protected TreeEditorPanel generatePanel(String currentPath, String rawFileName) {
         return new TreeEnglishSemanticPanel(currentPath, rawFileName, englishWordNet, turkishWordNet);
     }
+
 }

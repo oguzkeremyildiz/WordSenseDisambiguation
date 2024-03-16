@@ -1,7 +1,6 @@
 package Annotation.Sentence;
 
 import WordNet.SynSet;
-import WordNet.WordNet;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -11,7 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class SemanticExampleTreeCellRenderer extends DefaultTreeCellRenderer {
-    private HashMap<String, HashSet<String>> exampleSentences;
+    private final HashMap<String, HashSet<String>> exampleSentences;
 
     public SemanticExampleTreeCellRenderer(HashMap<String, HashSet<String>> exampleSentences){
         this.exampleSentences = exampleSentences;
@@ -23,12 +22,12 @@ public class SemanticExampleTreeCellRenderer extends DefaultTreeCellRenderer {
         if (currentNode.getUserObject() instanceof SynSet){
             SynSet synSet = (SynSet)currentNode.getUserObject();
             if (exampleSentences.containsKey(synSet.getId())){
-                String examples = "<html>";
+                StringBuilder examples = new StringBuilder("<html>");
                 for (String example: exampleSentences.get(synSet.getId())){
-                    examples += example + "<br>";
+                    examples.append(example).append("<br>");
                 }
-                examples += "</html>";
-                ((JComponent) cell).setToolTipText(examples);
+                examples.append("</html>");
+                ((JComponent) cell).setToolTipText(examples.toString());
             } else {
                 if (synSet.getExample() != null){
                     ((JComponent) cell).setToolTipText(synSet.getExample());

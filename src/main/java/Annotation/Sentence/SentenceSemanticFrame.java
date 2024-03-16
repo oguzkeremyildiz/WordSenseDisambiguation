@@ -11,18 +11,18 @@ import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import WordNet.WordNet;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
-    private JCheckBox autoSemanticDetectionOption;
+    private final JCheckBox autoSemanticDetectionOption;
     private FsmMorphologicalAnalyzer fsm;
     private WordNet wordNet;
-    private HashMap<String, HashSet<String>> exampleSentences;
+    private final HashMap<String, HashSet<String>> exampleSentences;
 
     public SentenceSemanticFrame(final FsmMorphologicalAnalyzer fsm, final WordNet wordNet) {
         super();
@@ -34,20 +34,22 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
         String domainPrefix = "";
         Properties properties = new Properties();
         try {
-            properties.load(new FileInputStream(new File("config.properties")));
+            properties.load(Files.newInputStream(new File("config.properties").toPath()));
             domainPrefix = properties.getProperty("domainPrefix");
             subFolder = properties.getProperty("subFolder");
-        } catch (IOException f) {
+        } catch (IOException ignored) {
         }
         if (subFolder.equals("false")){
             corpus = new AnnotatedCorpus(new File(TreeEditorPanel.phrasePath));
         } else {
             corpus = new AnnotatedCorpus();
             File[] listOfFiles = new File(TreeEditorPanel.phrasePath).listFiles();
-            Arrays.sort(listOfFiles);
-            for (File file:listOfFiles){
-                if (file.isDirectory() && !file.isHidden()){
-                    corpus.combine(new AnnotatedCorpus(file));
+            if (listOfFiles != null){
+                Arrays.sort(listOfFiles);
+                for (File file:listOfFiles){
+                    if (file.isDirectory() && !file.isHidden()){
+                        corpus.combine(new AnnotatedCorpus(file));
+                    }
                 }
             }
         }
@@ -70,7 +72,7 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
                 }
             }
         }
-        JMenuItem itemUpdateDictionary = addMenuItem(projectMenu, "Update Wordnet", KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
+        JMenuItem itemUpdateDictionary = addMenuItem(projectMenu, "Update Wordnet", KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK));
         String finalDomainPrefix = domainPrefix;
         itemUpdateDictionary.addActionListener(e -> {
             String domainWordNetFileName = finalDomainPrefix + "_wordnet.xml";
@@ -85,7 +87,7 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
                 current.setTurkishSentenceAutoSemantic(turkishSentenceAutoSemantic);
             }
         });
-        JMenuItem itemAutoAnnotate = addMenuItem(projectMenu, "Annotate Every Word With Last Sense", KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
+        JMenuItem itemAutoAnnotate = addMenuItem(projectMenu, "Annotate Every Word With Last Sense", KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK));
         itemAutoAnnotate.addActionListener(e -> {
             SentenceSemanticPanel current;
             int wordCount = 0, fileCount = 0;
@@ -128,7 +130,7 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
                 }
             }
         });
-        JMenuItem itemShowUnannotated = addMenuItem(projectMenu, "Show Unannotated Files", KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
+        JMenuItem itemShowUnannotated = addMenuItem(projectMenu, "Show Unannotated Files", KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK));
         itemShowUnannotated.addActionListener(e -> {
             int count = 0;
             String result = JOptionPane.showInputDialog(null, "How many sentences you want to see:", "",
@@ -151,10 +153,8 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
                 }
             }
         });
-        JMenuItem itemViewAnnotated = addMenuItem(projectMenu, "View Annotations", KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
-        itemViewAnnotated.addActionListener(e -> {
-            new ViewSentenceSemanticAnnotationFrame(corpus, this.wordNet, wordNet, this);
-        });
+        JMenuItem itemViewAnnotated = addMenuItem(projectMenu, "View Annotations", KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+        itemViewAnnotated.addActionListener(e -> new ViewSentenceSemanticAnnotationFrame(corpus, this.wordNet, wordNet, this));
         autoSemanticDetectionOption = new JCheckBox("Auto Semantic Detection", false);
         toolBar.add(autoSemanticDetectionOption);
         JOptionPane.showMessageDialog(this, "WordNet, dictionary, and annotated corpus are loaded!", "Semantic Annotation", JOptionPane.INFORMATION_MESSAGE);

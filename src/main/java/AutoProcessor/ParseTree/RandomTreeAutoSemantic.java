@@ -14,8 +14,8 @@ import java.util.Random;
 
 public class RandomTreeAutoSemantic extends TreeAutoSemantic{
 
-    private WordNet turkishWordNet;
-    private FsmMorphologicalAnalyzer fsm;
+    private final WordNet turkishWordNet;
+    private final FsmMorphologicalAnalyzer fsm;
 
     public RandomTreeAutoSemantic(WordNet turkishWordNet, FsmMorphologicalAnalyzer fsm){
         this.turkishWordNet = turkishWordNet;
@@ -29,7 +29,7 @@ public class RandomTreeAutoSemantic extends TreeAutoSemantic{
         ArrayList<ParseNodeDrawable> leafList = nodeDrawableCollector.collect();
         for (int i = 0; i < leafList.size(); i++){
             ArrayList<SynSet> synSets = getCandidateSynSets(turkishWordNet, fsm, leafList, i);
-            if (synSets.size() > 0){
+            if (!synSets.isEmpty()){
                 leafList.get(i).getLayerInfo().setLayerData(ViewLayerType.SEMANTICS, synSets.get(random.nextInt(synSets.size())).getId());
             }
         }

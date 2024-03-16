@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public class TurkishSentenceAutoSemantic extends SentenceAutoSemantic {
 
-    private WordNet turkishWordNet;
-    private FsmMorphologicalAnalyzer fsm;
+    private final WordNet turkishWordNet;
+    private final FsmMorphologicalAnalyzer fsm;
 
     /**
      * Constructor for the {@link TurkishSentenceAutoSemantic} class. Gets the Turkish wordnet and Turkish fst based

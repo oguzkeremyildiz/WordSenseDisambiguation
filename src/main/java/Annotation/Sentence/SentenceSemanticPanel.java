@@ -24,8 +24,8 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
     private FsmMorphologicalAnalyzer fsm;
     private WordNet wordNet;
     private TurkishSentenceAutoSemantic turkishSentenceAutoSemantic;
-    private JTree tree;
-    private DefaultTreeModel treeModel;
+    private final JTree tree;
+    private final DefaultTreeModel treeModel;
 
     public SentenceSemanticPanel(String currentPath, String fileName, FsmMorphologicalAnalyzer fsm, WordNet wordNet, HashMap<String, HashSet<String>> exampleSentences){
         super(currentPath, fileName, ViewLayerType.SEMANTICS);
@@ -201,7 +201,7 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
     }
 
     public ArrayList<SynSet> constructCandidateSynSets(AnnotatedWord word, int wordIndex){
-        ArrayList<SynSet> result = new ArrayList<SynSet>();
+        ArrayList<SynSet> result = new ArrayList<>();
         for (int i = wordIndex - 4; i <= wordIndex; i++){
             if (i >= 0 && i + 4 < sentence.wordCount()){
                 AnnotatedWord word1 = (AnnotatedWord) sentence.getWord(i);
