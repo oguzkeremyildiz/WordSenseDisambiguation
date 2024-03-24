@@ -39,20 +39,7 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
             subFolder = properties.getProperty("subFolder");
         } catch (IOException ignored) {
         }
-        if (subFolder.equals("false")){
-            corpus = new AnnotatedCorpus(new File(TreeEditorPanel.phrasePath));
-        } else {
-            corpus = new AnnotatedCorpus();
-            File[] listOfFiles = new File(TreeEditorPanel.phrasePath).listFiles();
-            if (listOfFiles != null){
-                Arrays.sort(listOfFiles);
-                for (File file:listOfFiles){
-                    if (file.isDirectory() && !file.isHidden()){
-                        corpus.combine(new AnnotatedCorpus(file));
-                    }
-                }
-            }
-        }
+        corpus = readCorpus(subFolder);
         for (int i = 0; i < corpus.sentenceCount(); i++) {
             AnnotatedSentence sentence = (AnnotatedSentence) corpus.getSentence(i);
             for (int j = 0; j < sentence.wordCount(); j++) {
