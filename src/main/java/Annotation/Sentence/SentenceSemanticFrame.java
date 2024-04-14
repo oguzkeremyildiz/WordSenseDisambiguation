@@ -24,6 +24,15 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
     private WordNet wordNet;
     private final HashMap<String, HashSet<String>> exampleSentences;
 
+    /**
+     * Constructor of the sense disambiguation frame for annotated sentence. It reads the annotated sentence
+     * corpus and adds automatic sense disambiguation button. It also adds itemUpdateDictionary button whose
+     * purpose is to use alternative domain wordnet for sense disambiguation. It also adds itemShowUnannotated button
+     * whose purpose is to show the partially annotated files for sense disambiguation. It also creates exampleSentences.
+     * exampleSentences will be used to show the user how other sentences with that word was annotated.
+     * @param fsm Morphological analyzer
+     * @param wordNet Turkish wordnet
+     */
     public SentenceSemanticFrame(final FsmMorphologicalAnalyzer fsm, final WordNet wordNet) {
         super();
         exampleSentences = new HashMap<>();
@@ -36,7 +45,9 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
         try {
             properties.load(Files.newInputStream(new File("config.properties").toPath()));
             domainPrefix = properties.getProperty("domainPrefix");
-            subFolder = properties.getProperty("subFolder");
+            if (properties.containsKey("subFolder")){
+                subFolder = properties.getProperty("subFolder");
+            }
         } catch (IOException ignored) {
         }
         corpus = readCorpus(subFolder);
@@ -151,6 +162,11 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
         return new SentenceSemanticPanel(currentPath, rawFileName, fsm, wordNet, exampleSentences);
     }
 
+    /**
+     * The next method takes an int count as input and moves forward along the SentenceSemanticPanels as much as the
+     * count. If the autoSemanticDetectionOption is selected, it automatically assigns semantic tags to words.
+     * @param count Integer count is used to move forward.
+     */
     public void next(int count) {
         super.next(count);
         SentenceSemanticPanel current;
@@ -160,6 +176,11 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
         }
     }
 
+    /**
+     * The previous method takes an int count as input and moves backward along the SentenceSemanticPanels as much as
+     * the count. If the autoSemanticDetectionOption is selected, it automatically assigns semantic tags to words.
+     * @param count Integer count is used to move backward.
+     */
     public void previous(int count) {
         super.previous(count);
         SentenceSemanticPanel current;

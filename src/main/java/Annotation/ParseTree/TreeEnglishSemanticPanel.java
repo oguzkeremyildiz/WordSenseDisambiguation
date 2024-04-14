@@ -9,8 +9,6 @@ import ParseTree.ParseNode;
 import WordNet.*;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -24,6 +22,14 @@ public class TreeEnglishSemanticPanel extends TreeLeafEditorPanel {
     private final DefaultListModel listModel;
     private ArrayList<Integer> translatedSideCandidateList;
 
+    /**
+     * Constructor for the sense disambiguation panel for a parse tree in English. It also adds the
+     * list selection listener which will update the parse tree according to the selection.
+     * @param path The absolute path of the annotated parse tree.
+     * @param fileName The raw file name of the annotated parse tree.
+     * @param englishWordNet English wordnet
+     * @param turkishWordNet Turkish wordnet
+     */
     public TreeEnglishSemanticPanel(String path, String fileName, WordNet englishWordNet, WordNet turkishWordNet) {
         super(path, fileName, ViewLayerType.ENGLISH_SEMANTICS, false);
         heightDecrease = 280;
@@ -70,6 +76,13 @@ public class TreeEnglishSemanticPanel extends TreeLeafEditorPanel {
         }
     }
 
+    /**
+     * Fills the JList that contains all English sense id's for the given word. Depending on the symbol on the parent
+     * node, that is, the pos tag of the English word, getSynSetsWithPossiblyModifiedLiteral is called to get
+     * possible candidate root word list. For multiword expression possibility in English, the next and previous
+     * siblings in the English tree are combined as two idiom (multiword expression) candidates.
+     * @param node Selected node for which options will be displayed.
+     */
     public void populateLeaf(ParseNodeDrawable node){
         SynSet selected = null;
         ArrayList<SynSet> synSets, synonymList = null;
@@ -161,6 +174,10 @@ public class TreeEnglishSemanticPanel extends TreeLeafEditorPanel {
         isEditing = true;
     }
 
+    /**
+     * When the use control clicks a node, the sense annotation is cleared.
+     * @param mouseEvent Mouse click event to handle.
+     */
     public void mouseClicked(MouseEvent mouseEvent) {
         ParseNodeDrawable node = currentTree.getLeafNodeAt(mouseEvent.getX(), mouseEvent.getY());
         if (node != null){
@@ -173,6 +190,13 @@ public class TreeEnglishSemanticPanel extends TreeLeafEditorPanel {
         }
     }
 
+    /**
+     * The size of the string displayed. If it is a leaf node, it returns the maximum size of the sense id's
+     * of word(s) in the leaf node. Otherwise, it returns the size of the symbol in the node.
+     * @param parseNode Parse node
+     * @param g Graphics on which tree will be drawn.
+     * @return Size of the string displayed.
+     */
     protected int getStringSize(ParseNodeDrawable parseNode, Graphics g) {
         if (parseNode.numberOfChildren() == 0) {
             String layerData = parseNode.getLayerData(ViewLayerType.ENGLISH_SEMANTICS);
@@ -186,6 +210,13 @@ public class TreeEnglishSemanticPanel extends TreeLeafEditorPanel {
         }
     }
 
+    /**
+     * If the node is a leaf node, it draws the word and its sense id. Otherwise, it draws the node symbol.
+     * @param parseNode Parse Node
+     * @param g Graphics on which symbol is drawn.
+     * @param x x coordinate
+     * @param y y coordinate
+     */
     protected void drawString(ParseNodeDrawable parseNode, Graphics g, int x, int y){
         if (parseNode.numberOfChildren() == 0){
             g.drawString(parseNode.getLayerData(ViewLayerType.ENGLISH_WORD), x, y);
@@ -199,6 +230,13 @@ public class TreeEnglishSemanticPanel extends TreeLeafEditorPanel {
         }
     }
 
+    /**
+     * Sets the size of the enclosing area of the parse node (for selecting, editing etc.).
+     * @param parseNode Parse Node
+     * @param x x coordinate of the center of the node.
+     * @param y y coordinate of the center of the node.
+     * @param stringSize Size of the string in terms of pixels.
+     */
     protected void setArea(ParseNodeDrawable parseNode, int x, int y, int stringSize){
         if (parseNode.numberOfChildren() == 0){
             parseNode.setArea(x - 5, y - 15, stringSize + 10, 40);

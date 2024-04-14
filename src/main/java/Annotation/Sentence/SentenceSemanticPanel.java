@@ -27,6 +27,15 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
     private final JTree tree;
     private final DefaultTreeModel treeModel;
 
+    /**
+     * Constructor for the sense disambiguator panel for an annotated sentence. Sets the attributes. Adds also the
+     * tree selection listener which updates the semantic layer of the clickedWord.
+     * @param currentPath The absolute path of the annotated file.
+     * @param fileName The raw file name of the annotated file.
+     * @param fsm Morphological analyzer
+     * @param wordNet Turkish Wordnet
+     * @param exampleSentences Enlists other annotated sentence that contains the same word in the key.
+     */
     public SentenceSemanticPanel(String currentPath, String fileName, FsmMorphologicalAnalyzer fsm, WordNet wordNet, HashMap<String, HashSet<String>> exampleSentences){
         super(currentPath, fileName, ViewLayerType.SEMANTICS);
         this.fsm = fsm;
@@ -70,16 +79,33 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
     protected void setWordLayer() {
     }
 
+    /**
+     * Sets the width and height of the JList that displays the word sense ids.
+     */
     @Override
     protected void setBounds() {
         pane.setBounds(((AnnotatedWord)sentence.getWord(selectedWordIndex)).getArea().getX(), ((AnnotatedWord)sentence.getWord(selectedWordIndex)).getArea().getY() + ((AnnotatedWord)sentence.getWord(selectedWordIndex)).getArea().getHeight(), 400, (int) (Toolkit.getDefaultToolkit().getScreenSize().height * 0.4));
     }
 
+    /**
+     * Sets the space between displayed lines in the sentence.
+     */
     @Override
     protected void setLineSpace() {
         lineSpace = 80;
     }
 
+    /**
+     * Draws the sense id of the word.
+     * @param word Annotated word itself.
+     * @param g Graphics on which sense id is drawn.
+     * @param currentLeft Current position on the x-axis, where the sense id will be aligned.
+     * @param lineIndex Current line of the word, if the sentence resides in multiple lines on the screen.
+     * @param wordIndex Index of the word in the annotated sentence.
+     * @param maxSize Maximum size in pixels of anything drawn in the screen.
+     * @param wordSize Array storing the sizes of all words in pixels in the annotated sentence.
+     * @param wordTotal Array storing the total size until that word of all words in the annotated sentence.
+     */
     @Override
     protected void drawLayer(AnnotatedWord word, Graphics g, int currentLeft, int lineIndex, int wordIndex, int maxSize, ArrayList<Integer> wordSize, ArrayList<Integer> wordTotal) {
         if (word.getSemantic() != null){
@@ -88,6 +114,13 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
         }
     }
 
+    /**
+     * Compares the size of the word and the size of the semantic id in pixels and returns the maximum
+     * of them.
+     * @param word Word annotated.
+     * @param g Graphics on which semantic id is drawn.
+     * @return Maximum of the graphic sizes of word and its semantic id.
+     */
     @Override
     protected int getMaxLayerLength(AnnotatedWord word, Graphics g) {
         int maxSize = g.getFontMetrics().stringWidth(word.getName());
@@ -100,24 +133,46 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
         return maxSize;
     }
 
+    /**
+     * Automatically sense disambiguate words in the sentence using turkishSentenceAutoSemantic.
+     */
     public void autoDetect(){
         turkishSentenceAutoSemantic.autoSemantic(sentence);
         sentence.save();
         this.repaint();
     }
 
+    /**
+     * Mutator for fsm
+     * @param fsm New morphological analyzer
+     */
     public void setFsm(FsmMorphologicalAnalyzer fsm){
         this.fsm = fsm;
     }
 
+    /**
+     * Mutator for wordnet
+     * @param wordNet New wordnet
+     */
     public void setWordnet(WordNet wordNet){
         this.wordNet = wordNet;
     }
 
+    /**
+     * Mutator for turkishSentenceAutoSemantic
+     * @param turkishSentenceAutoSemantic New Turkish sense disambiguator
+     */
     public void setTurkishSentenceAutoSemantic(TurkishSentenceAutoSemantic turkishSentenceAutoSemantic){
         this.turkishSentenceAutoSemantic = turkishSentenceAutoSemantic;
     }
 
+    /**
+     * Adds synSets as tree nodes to the root of the tree. Then for each synset, adds its literals to the node for
+     * that synset. So, synsets will be children of the root node and literals will be grandchildren of the root node.
+     * @param word Word for which tree is generated
+     * @param synSets Possible candidate synsets for the word
+     * @return Selected synset object for the word.
+     */
     private DefaultMutableTreeNode addSynSets(AnnotatedWord word, ArrayList<SynSet> synSets){
         DefaultMutableTreeNode selectedNode = null;
         for (SynSet synSet : synSets) {
@@ -200,6 +255,14 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
         getParent().invalidate();
     }
 
+    /**
+     * Constructs possible candidate synsets for a given word. It checks if there is a five, four, three, or two word
+     * multi-word idiom expression where word appears anywhere in the idiom. It also adds single word synsets for the
+     * given word.
+     * @param word Word for which candidate synsets are found
+     * @param wordIndex Index of the word in the sentence
+     * @return Possible candidate synsets for a given word
+     */
     public ArrayList<SynSet> constructCandidateSynSets(AnnotatedWord word, int wordIndex){
         ArrayList<SynSet> result = new ArrayList<>();
         for (int i = wordIndex - 4; i <= wordIndex; i++){
@@ -250,6 +313,12 @@ public class SentenceSemanticPanel extends SentenceAnnotatorPanel {
         return result;
     }
 
+    /**
+     * Fills the JTree that contains all possible senses for the current word.
+     * @param sentence Sentence used to populate for the current word.
+     * @param wordIndex Index of the selected word.
+     * @return The index of the selected word sense, -1 if nothing selected.
+     */
     public int populateLeaf(AnnotatedSentence sentence, int wordIndex){
         int selectedIndex = -1;
         AnnotatedWord word = (AnnotatedWord) sentence.getWord(wordIndex);

@@ -8,6 +8,11 @@ public class TreeEnglishSemanticFrame extends TreeEditorFrame {
     private final WordNet englishWordNet;
     private final WordNet turkishWordNet;
 
+    /**
+     * Constructor of the sense disambiguation frame for parse trees in English.
+     * @param englishWordNet English wordNet.
+     * @param turkishWordNet Turkish wordNet.
+     */
     public TreeEnglishSemanticFrame(final WordNet englishWordNet, final WordNet turkishWordNet){
         this.setTitle("English Semantic Editor");
         this.englishWordNet = englishWordNet;

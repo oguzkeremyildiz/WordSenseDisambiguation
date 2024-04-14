@@ -26,6 +26,15 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
     private ArrayList<SynSet>[] meanings;
     private ArrayList<SynSet> idioms, idioms1, idioms2;
 
+    /**
+     * Constructor for the sense disambiguation panel for a parse tree in Turkish. It also adds the
+     * tree selection listener which will update the parse tree according to the selection.
+     * @param path The absolute path of the annotated parse tree.
+     * @param fileName The raw file name of the annotated parse tree.
+     * @param wordNet Turkish wordnet
+     * @param fsm Morphological analyzer
+     * @param defaultFillEnabled If true, automatic annotation will be done.
+     */
     public TreeTurkishSemanticPanel(String path, String fileName, WordNet wordNet, FsmMorphologicalAnalyzer fsm, boolean defaultFillEnabled) {
         super(path, fileName, ViewLayerType.SEMANTICS, defaultFillEnabled);
         heightDecrease = 280;
@@ -69,6 +78,12 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
         addMouseMotionListener(this);
     }
 
+    /**
+     * Returns selected word senses for all words in the leaf node. There can be at most three words in a
+     * leaf node, therefore the method returns an array of sense id's selected.
+     * @param node Selected tree node in JTree
+     * @return An array of selected sense id's of the word(s) in the leaf node of the parse tree.
+     */
     private ArrayList<String> getSelectedMeanings(DefaultMutableTreeNode node){
         ArrayList<String> selectedMeanings = new ArrayList<>();
         switch (meanings.length){
@@ -129,6 +144,25 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
         return selectedMeanings;
     }
 
+    /**
+     * Fills the JTree that contains all possible word senses of the word(s) in the leaf node. For every
+     * node in the leaf node, first all single word possible word senses are identified and placed in meanings.
+     * meanings[0] for the first word, meanings[1] for the second word, and meanings[2] for the third word. If the
+     * number of words in the leaf one is(are)
+     * <ul>
+     *     <li>one: Possible two word idioms are constructed with the previous sibling node and next sibling node
+     *     separately and placed in idioms1 and idioms2 respectively</li>
+     *     <li>two: Possible two word idioms are constructed with the two words in the leaf node and placed in
+     *     idioms. </li>
+     *     <li>three: Possible three word idioms are constructed with the three words in the leaf node and
+     *     placed in idioms. Possible two word idioms are constructed with the first two and last two words separately
+     *     and placed in idioms1 and idioms2 respectively</li>
+     * </ul>
+     * According to these arrays, the first level of the tree shows all possible senses associated with the first word,
+     * second level of the tree will show all possible senses associated with the second word, and third level of the
+     * tree shows all possible senses associated with the third word in the leaf node.
+     * @param node Selected node for which options will be displayed.
+     */
     public void populateLeaf(ParseNodeDrawable node){
         DefaultMutableTreeNode selectedNode = null;
         if (previousNode != null){
@@ -270,6 +304,12 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
         ToolTipManager.sharedInstance().registerComponent(tree);
     }
 
+    /**
+     * Some of the words in the leaf node are sense disambiguated automatically. The words automatically
+     * disambiguated are the words that only have one sense.
+     * @param node Leaf node for which sense disambiguation will be done.
+     * @return True, if automatic sense disambiguation is done, false otherwise.
+     */
     protected boolean defaultFill(ParseNodeDrawable node){
         if (wordNet == null || fsm == null){
             return false;
@@ -302,6 +342,13 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
         return false;
     }
 
+    /**
+     * The size of the string displayed. If it is a leaf node, it returns the maximum size of the sense id's
+     * of word(s) in the leaf node. Otherwise, it returns the size of the symbol in the node.
+     * @param parseNode Parse node
+     * @param g Graphics on which tree will be drawn.
+     * @return Size of the string displayed.
+     */
     protected int getStringSize(ParseNodeDrawable parseNode, Graphics g) {
         int i, stringSize = 0;
         if (parseNode.numberOfChildren() == 0) {
@@ -319,6 +366,13 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
         }
     }
 
+    /**
+     * If the node is a leaf node, it draws the word and its sense id. Otherwise, it draws the node symbol.
+     * @param parseNode Parse Node
+     * @param g Graphics on which symbol is drawn.
+     * @param x x coordinate
+     * @param y y coordinate
+     */
     protected void drawString(ParseNodeDrawable parseNode, Graphics g, int x, int y){
         int i;
         if (parseNode.numberOfChildren() == 0){
@@ -337,6 +391,13 @@ public class TreeTurkishSemanticPanel extends TreeLeafEditorPanel {
         }
     }
 
+    /**
+     * Sets the size of the enclosing area of the parse node (for selecting, editing etc.).
+     * @param parseNode Parse Node
+     * @param x x coordinate of the center of the node.
+     * @param y y coordinate of the center of the node.
+     * @param stringSize Size of the string in terms of pixels.
+     */
     protected void setArea(ParseNodeDrawable parseNode, int x, int y, int stringSize){
         if (parseNode.numberOfChildren() == 0){
             try {

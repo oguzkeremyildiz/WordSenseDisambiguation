@@ -15,6 +15,11 @@ public class TreeTurkishSemanticFrame extends TreeEditorFrame {
     private final WordNet wordNet;
     private final FsmMorphologicalAnalyzer fsm;
 
+    /**
+     * Constructor of the sense disambiguation frame for parse trees in Turkish.
+     * @param fsm Morphological analyzer
+     * @param wordNet Turkish WordNet
+     */
     public TreeTurkishSemanticFrame(final WordNet wordNet, final FsmMorphologicalAnalyzer fsm){
         this.setTitle("Turkish Semantic Editor");
         this.wordNet = wordNet;

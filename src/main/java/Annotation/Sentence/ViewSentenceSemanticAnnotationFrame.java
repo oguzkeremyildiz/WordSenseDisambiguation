@@ -17,6 +17,10 @@ public class ViewSentenceSemanticAnnotationFrame extends ViewSentenceAnnotationF
     private final WordNet domainWordNet;
     private final WordNet turkish;
 
+    /**
+     * Updates the word senses for the selected sentences.
+     * @param e Action event to be processed.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
@@ -32,6 +36,11 @@ public class ViewSentenceSemanticAnnotationFrame extends ViewSentenceAnnotationF
 
     public class SemanticTableDataModel extends TableDataModel {
 
+        /**
+         * Returns the name of the given column.
+         * @param col  the column being queried
+         * @return Name of the given column
+         */
         public String getColumnName(int col) {
             switch (col) {
                 case FILENAME_INDEX:
@@ -53,6 +62,12 @@ public class ViewSentenceSemanticAnnotationFrame extends ViewSentenceAnnotationF
             }
         }
 
+        /**
+         * Updates the named entity tag for the sentence in the given cell.
+         * @param value   value to assign to cell
+         * @param row   row of cell
+         * @param col  column of cell
+         */
         public void setValueAt(Object value, int row, int col) {
             if (col == TAG_INDEX && !data.get(row).get(TAG_INDEX).equals(value)) {
                 updateSemantic(row, (String) value);
@@ -60,6 +75,12 @@ public class ViewSentenceSemanticAnnotationFrame extends ViewSentenceAnnotationF
         }
     }
 
+    /**
+     * Sets the value in the data table. After finding the corresponding sentence in that row, updates the semantic
+     * layer of that word associated with that row.
+     * @param row Index of the row
+     * @param newValue New semantic id to be assigned.
+     */
     private void updateSemantic(int row, String newValue){
         data.get(row).set(TAG_INDEX, newValue);
         AnnotatedSentence sentence = (AnnotatedSentence) corpus.getSentence(Integer.parseInt(data.get(row).get(COLOR_COLUMN_INDEX - 1)));
@@ -76,6 +97,21 @@ public class ViewSentenceSemanticAnnotationFrame extends ViewSentenceAnnotationF
         }
     }
 
+    /**
+     * Constructs the data table. For every sentence, the columns are:
+     * <ol>
+     *     <li>Annotated sentence file name</li>
+     *     <li>Index of the word</li>
+     *     <li>Word itself</li>
+     *     <li>Sense id of the word if it exists, - otherwise</li>
+     *     <li>Literals of the sense of the word if it exists, - otherwise</li>
+     *     <li>Definition of the sense of the word if it exists, - otherwise</li>
+     *     <li>Annotated sentence itself</li>
+     *     <li>Reduced morphological analyses of the word</li>
+     *     <li>Sentence index</li>
+     * </ol>
+     * @param corpus Annotated NER corpus
+     */
     protected void prepareData(AnnotatedCorpus corpus){
         data = new ArrayList<>();
         for (int i = 0; i < corpus.sentenceCount(); i++){
@@ -112,6 +148,15 @@ public class ViewSentenceSemanticAnnotationFrame extends ViewSentenceAnnotationF
         }
     }
 
+    /**
+     * Constructs sense disambiguation frame viewer. Arranges the minimum width, maximum width or with of every
+     * column. If the user double-clicks any row, the method automatically creates a new panel showing associated
+     * annotated sentence.
+     * @param corpus Annotated corpus
+     * @param domainWordNet Domain wordnet
+     * @param turkish Turkish wordnet
+     * @param sentenceSemanticFrame Frame in which new panels will be created, when the user double-clicks a row.
+     */
     public ViewSentenceSemanticAnnotationFrame(AnnotatedCorpus corpus, WordNet domainWordNet, WordNet turkish, SentenceSemanticFrame sentenceSemanticFrame){
         super(corpus);
         this.domainWordNet = domainWordNet;
