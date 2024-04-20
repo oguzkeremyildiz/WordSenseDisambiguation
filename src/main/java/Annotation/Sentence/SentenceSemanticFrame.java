@@ -131,22 +131,28 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
         JMenuItem itemShowUnannotated = addMenuItem(projectMenu, "Show Unannotated Files", KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK));
         itemShowUnannotated.addActionListener(e -> {
             int count = 0;
-            String result = JOptionPane.showInputDialog(null, "How many sentences you want to see:", "",
+            String result1 = JOptionPane.showInputDialog(null, "How many sentences you want to see:", "",
                     JOptionPane.PLAIN_MESSAGE);
-            int numberOfSentences = Integer.parseInt(result);
+            int numberOfSentences = Integer.parseInt(result1);
+            String result2 = JOptionPane.showInputDialog(null, "How many words does not have semantic annotation in the sentence:", "",
+                    JOptionPane.PLAIN_MESSAGE);
+            int missingAnnotations = Integer.parseInt(result2);
             for (int i = 0; i < corpus.sentenceCount(); i++) {
+                int missingCount = 0;
                 AnnotatedSentence sentence = (AnnotatedSentence) corpus.getSentence(i);
                 for (int j = 0; j < sentence.wordCount(); j++) {
                     AnnotatedWord word = (AnnotatedWord) sentence.getWord(j);
                     String semantic = word.getSemantic();
                     if (word.getName() != null && semantic == null) {
-                        SentenceAnnotatorPanel annotatorPanel = generatePanel(TreeEditorPanel.phrasePath, sentence.getFileName());
-                        addPanelToFrame(annotatorPanel, sentence.getFileName());
-                        count++;
-                        if (count == numberOfSentences) {
-                            return;
-                        }
-                        break;
+                        missingCount++;
+                    }
+                }
+                if (missingCount == missingAnnotations) {
+                    SentenceAnnotatorPanel annotatorPanel = generatePanel(TreeEditorPanel.phrasePath, sentence.getFileName());
+                    addPanelToFrame(annotatorPanel, sentence.getFileName());
+                    count++;
+                    if (count == numberOfSentences) {
+                        return;
                     }
                 }
             }
