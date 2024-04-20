@@ -148,7 +148,7 @@ public class SentenceSemanticFrame extends SentenceAnnotatorFrame {
                     }
                 }
                 if (missingCount == missingAnnotations) {
-                    SentenceAnnotatorPanel annotatorPanel = generatePanel(TreeEditorPanel.phrasePath, sentence.getFileName());
+                    SentenceAnnotatorPanel annotatorPanel = generatePanel(sentence.getFile().getParent(), sentence.getFileName());
                     addPanelToFrame(annotatorPanel, sentence.getFileName());
                     count++;
                     if (count == numberOfSentences) {
