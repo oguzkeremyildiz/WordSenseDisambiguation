@@ -29,7 +29,7 @@ public class MostFrequentSentenceAutoSemantic extends SentenceAutoSemantic {
      * occurs in the Turkish wordnet.
      * 3. the current word
      * and sets the most frequent sense for that multiword expression or word.
-     * @param sentence The sentence for which word sense disambiguation will be determined automatically.
+     * @param sentence The sentence for which word sense will be determined automatically.
      */
     @Override
     public boolean autoLabelSingleSemantics(AnnotatedSentence sentence) {
@@ -119,9 +119,9 @@ public class MostFrequentSentenceAutoSemantic extends SentenceAutoSemantic {
     }
 
     /**
-     Determines the synset containing the literal with the lowest sense number.
-     @param literals an ArrayList of Literal objects
-     @return the SynSet containing the literal with the lowest sense number, or null if the input list is empty
+     * Determines the synset containing the literal with the lowest sense number.
+     * @param literals an ArrayList of Literal objects
+     * @return the SynSet containing the literal with the lowest sense number, or null if the input list is empty
      */
     private SynSet mostFrequent(ArrayList<Literal> literals) {
         if (literals.size() == 1) {

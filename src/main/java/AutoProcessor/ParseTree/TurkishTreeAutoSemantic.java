@@ -18,11 +18,22 @@ public class TurkishTreeAutoSemantic extends TreeAutoSemantic {
     private final WordNet turkishWordNet;
     private final FsmMorphologicalAnalyzer fsm;
 
+    /**
+     * Constructor for the {@link TurkishTreeAutoSemantic} class. Gets the Turkish wordnet and Turkish fst based
+     * morphological analyzer from the user and sets the corresponding attributes.
+     * @param turkishWordNet Turkish wordnet
+     * @param fsm Turkish morphological analyzer
+     */
     public TurkishTreeAutoSemantic(WordNet turkishWordNet, FsmMorphologicalAnalyzer fsm){
         this.turkishWordNet = turkishWordNet;
         this.fsm = fsm;
     }
 
+    /**
+     * The method checks the number of possible senses of each word in the parse tree. If all words have only one
+     * possible sense, it annotates the words with the corresponding sense. Otherwise, it does not annotate any words.
+     * @param parseTree The parse tree for which word sense annotation will be done automatically.
+     */
     protected boolean autoLabelSingleSemantics(ParseTreeDrawable parseTree) {
         boolean modified = false;
         NodeDrawableCollector nodeDrawableCollector = new NodeDrawableCollector((ParseNodeDrawable) parseTree.getRoot(), new IsTurkishLeafNode());
