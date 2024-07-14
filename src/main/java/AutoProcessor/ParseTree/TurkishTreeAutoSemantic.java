@@ -33,6 +33,7 @@ public class TurkishTreeAutoSemantic extends TreeAutoSemantic {
      * The method checks the number of possible senses of each word in the parse tree. If all words have only one
      * possible sense, it annotates the words with the corresponding sense. Otherwise, it does not annotate any words.
      * @param parseTree The parse tree for which word sense annotation will be done automatically.
+     * @return True, if at least one word is semantically annotated, false otherwise.
      */
     protected boolean autoLabelSingleSemantics(ParseTreeDrawable parseTree) {
         boolean modified = false;

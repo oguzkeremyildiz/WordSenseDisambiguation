@@ -7,7 +7,6 @@ import AnnotatedTree.ParseTreeDrawable;
 import AnnotatedTree.Processor.Condition.IsTurkishLeafNode;
 import AnnotatedTree.Processor.NodeDrawableCollector;
 import AnnotatedTree.WordNotExistsException;
-import AutoProcessor.Sentence.MostFrequentSentenceAutoSemantic;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import WordNet.*;
 
